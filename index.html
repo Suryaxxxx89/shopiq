@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Compare prices of mobiles and laptops across Amazon, Flipkart, Reliance Digital, and Croma. Find the best deal in India." />
+  <title>ShopIQ – Find Your Best Deal</title>
+  <link rel="stylesheet" href="testp.css" />
+</head>
+<body>
+
+  <!-- ==================== SPLASH SCREEN ==================== -->
+  <div id="splashScreen" aria-live="polite" aria-label="Loading ShopIQ">
+    <div class="splash-logo-ring">
+      <span class="splash-logo-icon">🏷️</span>
+    </div>
+    <div class="splash-brand">ShopIQ</div>
+    <div class="splash-tagline">Best deals across top Indian stores</div>
+    <div class="splash-spinner"></div>
+    <div class="splash-loading-text">Fetching latest prices…</div>
+  </div>
+
+  <!-- ==================== SEARCH PAGE ==================== -->
+  <div id="searchPage" class="page">
+
+    <!-- Hero banner -->
+    <section style="background:linear-gradient(90deg,#2563eb 0%,#38bdf8 100%); border-radius:18px;
+                    box-shadow:0 8px 32px rgba(37,99,235,.18); padding:2.2rem 1.2rem 2.7rem;
+                    margin-bottom:1.2rem; display:flex; flex-direction:column; align-items:center;">
+      <div class="brand" style="color:#fff; border-left:4px solid #fff;">ShopIQ</div>
+      <h1 style="color:#fff; font-size:2.5rem; font-weight:900; margin-bottom:.5rem; letter-spacing:.5px;">
+        Find Your Best Deal
+      </h1>
+      <p style="color:#e0e7ef; font-size:1.1rem; margin-bottom:1.2rem; max-width:600px; text-align:center;">
+        Compare prices, specs, and reviews for mobiles and laptops.
+        Search, filter, and discover the best offers from top stores in India.
+      </p>
+
+      <!-- Search row -->
+      <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:1.2rem;">
+        <div style="position:relative; width:100%; max-width:700px; margin-bottom:.7rem;">
+          <input id="searchInput" class="selector" placeholder="Search products (e.g. iPhone 15, MacBook Air)" autocomplete="off"
+            style="width:100%; padding-left:2.7rem; padding-right:7.5rem; max-width:700px; background:#fff;
+                   border:1.5px solid #e0e0e0; color:#222; font-weight:400; border-radius:24px;
+                   box-shadow:0 2px 12px rgba(0,0,0,0.08); font-size:1.13rem; height:48px;
+                   outline:none; transition:border-color .2s;"
+            onfocus="this.style.borderColor='#4285f4'"
+            onblur="this.style.borderColor='#e0e0e0'" />
+          <!-- Search icon -->
+          <span style="position:absolute; left:1.1rem; top:50%; transform:translateY(-50%);
+                       font-size:1.45rem; color:#bdbdbd; pointer-events:none;">
+            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="8" stroke="#bdbdbd" stroke-width="2"/>
+              <path d="M22 22l-5-5" stroke="#bdbdbd" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <!-- Search button -->
+          <button id="searchBtn"
+            style="position:absolute; right:.4rem; top:50%; transform:translateY(-50%);
+                   background:linear-gradient(90deg,#1e40af,#2563eb); color:#fff; border:none;
+                   border-radius:20px; padding:.38rem 1.1rem; font-size:.88rem; font-weight:700;
+                   letter-spacing:.2px; cursor:pointer; height:36px;
+                   box-shadow:0 4px 12px rgba(37,99,235,.35);
+                   transition:opacity .15s ease, transform .15s ease;">
+            Search
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div style="display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center; width:100%; max-width:700px;">
+          <select id="categoryFilter" class="selector" style="width:130px; background:#f1f5f9; border:1px solid #fff; color:#2563eb;">
+            <option value="all">All</option>
+            <option value="mobiles">Mobiles</option>
+            <option value="laptops">Laptops</option>
+          </select>
+
+          <select id="sortMode" class="selector" style="width:180px; background:#f1f5f9; border:1px solid #fff; color:#2563eb;">
+            <option value="none">Sort: Cheapest first</option>
+            <option value="expensive">Sort: Most expensive first</option>
+          </select>
+
+          <button id="clearSearch" class="selector"
+            style="max-width:120px; background:#2563eb; color:#fff; border:none; font-weight:700; cursor:pointer;">
+            Clear
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Store Filters (Shown after search) -->
+    <div id="storeFilters" style="display:none; flex-direction:row; gap:1rem; flex-wrap:wrap; justify-content:center; width:100%; margin-bottom:1rem; font-size:.95rem; color:#475569; padding: .5rem 1rem;">
+      <span style="font-weight:700; margin-right:.5rem; color:#1e293b;">Compare stores:</span>
+      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
+        <input type="checkbox" value="amazon" checked /> Amazon
+      </label>
+      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
+        <input type="checkbox" value="flipkart" checked /> Flipkart
+      </label>
+      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
+        <input type="checkbox" value="croma" checked /> Croma
+      </label>
+      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
+        <input type="checkbox" value="reliance" checked /> Reliance Digital
+      </label>
+      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
+        <input type="checkbox" value="tatacliq" checked /> Tata CLiQ
+      </label>
+    </div>
+
+    <!-- Results list -->
+    <div id="resultsList" class="card"
+      style="min-height:120px; background:linear-gradient(135deg,#e0e7ef 0%,#f8fafc 100%);
+             border-radius:18px; box-shadow:0 6px 24px rgba(37,99,235,.08);">
+    </div>
+
+    <!-- Specs card (inline) -->
+    <div id="specsCard" class="chart-card" style="display:none;">
+      <div class="chart-title">Selected product specs</div>
+      <div id="productDetails" class="chart-box" style="display:block; margin-top:0;"></div>
+    </div>
+
+    <!-- Price graph card (inline) -->
+    <div id="graphCard" class="chart-card" style="display:none;">
+      <div class="chart-title">Price difference graph (relative to lowest seller)</div>
+      <div id="priceChart" class="chart-box"></div>
+      <div id="storeLinks" class="store-links-area" style="display:none;"></div>
+    </div>
+
+  </div><!-- /searchPage -->
+
+
+  <!-- ==================== COMPARE PAGE ==================== -->
+  <div id="comparePage" class="page" style="display:none;">
+    <header>
+      <div class="brand">ShopIQ</div>
+      <h1>Comparison Interface</h1>
+      <p>Detailed specs and seller price graph for the selected product.</p>
+    </header>
+
+    <button id="backButton" class="back-btn" style="margin-bottom:.7rem;">← Back to Search</button>
+
+    <div id="compareHeader" class="card" style="padding:.8rem; margin-bottom:.6rem;">
+      <div id="compareTitle"   style="font-weight:800; font-size:1.05rem; color:#0f172a;"></div>
+      <div id="compareSummary" style="color:#475569; font-size:.9rem;"></div>
+    </div>
+
+    <div id="specsCardCompare" class="chart-card">
+      <div class="chart-title">Product specs</div>
+      <div id="productDetailsCompare" class="chart-box"></div>
+    </div>
+
+    <div id="graphCardCompare" class="chart-card">
+      <div class="chart-title">Price graph</div>
+      <div id="priceChartCompare" class="chart-box"></div>
+      <div id="storeLinksCompare" class="store-links-area" style="display:none;"></div>
+    </div>
+
+  </div><!-- /comparePage -->
+
+  <script src="testp.js"></script>
+</body>
+</html>

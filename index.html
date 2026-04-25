@@ -4,22 +4,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="ShopIQ - Compare prices across Amazon, Flipkart, Croma and more. Find the best deals in India." />
+  <meta name="description"
+    content="ShopIQ - Compare prices across Amazon, Flipkart, Croma and more. Find the best deals in India." />
   <title>ShopIQ – Premium Price Comparison</title>
   <link rel="stylesheet" href="testp.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script>
-    (function() {
+    (function () {
       if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark-theme');
       }
       // Failsafe to hide splash even if testp.js fails
-      setTimeout(function() {
+      setTimeout(function () {
         var s = document.getElementById('splashScreen');
         if (s) {
           s.style.opacity = '0';
           s.style.transition = 'opacity 0.5s ease';
-          setTimeout(function() { s.style.display = 'none'; }, 500);
+          setTimeout(function () { s.style.display = 'none'; }, 500);
         }
       }, 3000);
     })();
@@ -44,11 +45,12 @@
           <span class="logo-text">ShopIQ</span>
         </div>
       </div>
-      
+
       <div class="header-center">
         <div class="search-bar-wrapper">
           <i class="fas fa-search search-icon"></i>
-          <input id="searchInput" type="text" placeholder="Search for products, brands and more..." autocomplete="off" />
+          <input id="searchInput" type="text" placeholder="Search for products, brands and more..."
+            autocomplete="off" />
           <button id="searchBtn">Search</button>
         </div>
       </div>
@@ -56,8 +58,10 @@
       <div class="header-right">
         <div class="nav-links">
           <a href="account.html" class="nav-link"><i class="far fa-user"></i> Login</a>
-          <a href="#" class="nav-link" onclick="showWishlistPage(); return false;"><i class="fas fa-heart"></i> Wishlist <span id="wishlistCount" class="badge" style="display:none;">0</span></a>
-          <a href="#" class="nav-link" onclick="showCartPage(); return false;"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCount" class="badge" style="display:none;">0</span></a>
+          <a href="#" class="nav-link" onclick="showWishlistPage(); return false;"><i class="fas fa-heart"></i> Wishlist
+            <span id="wishlistCount" class="badge" style="display:none;">0</span></a>
+          <a href="#" class="nav-link" onclick="showCartPage(); return false;"><i class="fas fa-shopping-cart"></i> Cart
+            <span id="cartCount" class="badge" style="display:none;">0</span></a>
         </div>
       </div>
     </div>
@@ -103,7 +107,7 @@
 
   <!-- ==================== MAIN CONTENT AREA ==================== -->
   <main id="mainContent">
-    
+
     <!-- HOME PAGE -->
     <div id="homePage" class="page-view">
       <!-- Hero Section -->
@@ -147,9 +151,11 @@
       <div class="results-layout">
         <aside class="results-sidebar">
           <div class="filter-card">
-            <div class="filter-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #f0f0f0; padding-bottom:10px;">
+            <div class="filter-card-header"
+              style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #f0f0f0; padding-bottom:10px;">
               <h3 style="margin:0;">Filters</h3>
-              <span id="clearSearch" style="color:var(--primary-light); font-size:12px; font-weight:700; cursor:pointer;">CLEAR ALL</span>
+              <span id="clearSearch"
+                style="color:var(--primary-light); font-size:12px; font-weight:700; cursor:pointer;">CLEAR ALL</span>
             </div>
             <div class="filter-group">
               <label>Category</label>
@@ -184,12 +190,12 @@
             </div>
           </div>
         </aside>
-        
+
         <section class="results-main">
           <div id="resultsList">
             <!-- Results populated by JS -->
           </div>
-          
+
           <div id="pasteLinkSection" style="display:none;" class="fallback-card">
             <h3>Can't find it?</h3>
             <p>Paste a product link and we'll track the price for you.</p>
@@ -229,7 +235,7 @@
           <button onclick="goBackView()" class="pdp-back-btn"><i class="fas fa-arrow-left"></i></button>
           <div class="pdp-logo">🏷️ ShopIQ</div>
         </div>
-        
+
         <div class="pdp-content">
           <div class="pdp-left">
             <div class="pdp-image-wrap">
@@ -240,14 +246,16 @@
             </div>
             <div class="pdp-actions">
               <button id="pdpWishlistBtn" class="pdp-wishlist-btn"><i class="far fa-heart"></i></button>
-              <button id="pdpCartBtn" class="add-to-cart-btn" style="flex:1; justify-content:center; padding:16px; margin-top:0;"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+              <button id="pdpCartBtn" class="add-to-cart-btn"
+                style="flex:1; justify-content:center; padding:16px; margin-top:0;"><i class="fas fa-shopping-cart"></i>
+                Add to Cart</button>
             </div>
             <div class="pdp-actions" style="margin-top:12px;">
               <a id="buyLowestBtn" href="#" target="_blank" class="pdp-buy-btn primary">BUY NOW</a>
               <a id="buyLowestBtn2" href="#" target="_blank" class="pdp-buy-btn secondary">VIEW ON STORE</a>
             </div>
           </div>
-          
+
           <div class="pdp-right">
             <h1 id="compareTitle">Product Title</h1>
             <div class="pdp-price-row">
@@ -256,7 +264,7 @@
               <span id="compareDiscount" class="discount-badge"></span>
             </div>
             <div id="compareSummary" style="margin-top: 10px; font-size: 0.9rem; color: #64748b;"></div>
-            
+
             <div class="store-compare-list">
               <h3>Store Comparison</h3>
               <div id="storeLinksCompare"></div>
@@ -294,4 +302,5 @@
 
   <script src="testp.js?v=2"></script>
 </body>
+
 </html>

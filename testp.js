@@ -146,6 +146,13 @@ function updateBadges() {
       loginLink.innerHTML = `<i class="far fa-user"></i> Login`;
     }
   }
+
+  // Update theme toggle icon
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    const isDark = document.documentElement.classList.contains('dark-theme');
+    themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+  }
 }
 
 function toggleWishlist(e, itemStr) {
@@ -2006,6 +2013,16 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (newHash === '#cart') showCartPage();
     else if (newHash === '' || newHash === '#home') showHomePage();
   });
+
+  // Theme Toggle Listener
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark-theme');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateBadges(); // Refresh icon
+    });
+  }
 });
 
 /**

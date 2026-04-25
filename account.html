@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account – ShopIQ</title>
+  <link rel="stylesheet" href="testp.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+      }
+    })();
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: Inter, sans-serif; min-height: 100vh; color: var(--text); transition: background 0.3s, color 0.3s; }
+
+    /* ── Top Nav ── */
+    .acc-nav { display:flex; justify-content:space-between; align-items:center; padding:.8rem 2rem; background:var(--primary); position:sticky; top:0; z-index:100; box-shadow:var(--nav-shadow); }
+    .acc-nav a { text-decoration:none; }
+    .acc-nav-brand { font-weight:900; font-size:1.4rem; color:#fff; display:flex; align-items:center; gap:.5rem; }
+    .acc-nav-links { display:flex; gap:1rem; align-items:center; }
+    .acc-nav-btn { color:#fff; font-weight:600; font-size:.9rem; padding:.4rem .8rem; border-radius:6px; transition:background .15s; background:transparent; border:none; cursor:pointer; display:flex; align-items:center; gap:5px; }
+    .acc-nav-btn:hover { background:rgba(255,255,255,.15); }
+    .acc-nav-btn.logout { color:#ffcdd2; }
+
+    /* ── Layout ── */
+    .acc-layout { display:flex; gap:1rem; max-width:1200px; margin:1.2rem auto; width:95%; }
+
+    /* ── Sidebar ── */
+    .acc-sidebar { flex:0 0 260px; }
+    .acc-sidebar-card { background:var(--card-bg); border-radius:4px; box-shadow:var(--shadow); overflow:hidden; margin-bottom:.8rem; }
+    .acc-user-card { display:flex; align-items:center; gap:1rem; padding:1.2rem 1rem; border-bottom:1px solid var(--border); }
+    .acc-avatar { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,var(--primary),#7b68ee); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:800; flex-shrink:0; }
+    .acc-user-hello { font-size:.75rem; color:var(--text-muted); }
+    .acc-user-name { font-weight:700; color:var(--text); font-size:1rem; }
+
+    .acc-menu { list-style:none; }
+    .acc-menu-section { padding:.6rem 1.2rem; font-size:.7rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.5px; margin-top:.3rem; }
+    .acc-menu-item { display:flex; align-items:center; gap:.7rem; padding:.7rem 1.2rem; color:var(--text); font-size:.88rem; font-weight:500; cursor:pointer; transition:all .15s; border-left:3px solid transparent; }
+    .acc-menu-item:hover { background:var(--sidebar-hover); }
+    .acc-menu-item.active { background:var(--active-bg); color:var(--primary); font-weight:700; border-left-color:var(--primary); }
+    .acc-menu-item .mi-icon { font-size:1.1rem; width:22px; text-align:center; }
+    .acc-menu-item .mi-badge { margin-left:auto; background:#ff6161; color:#fff; font-size:.65rem; font-weight:700; padding:1px 6px; border-radius:10px; }
+    .acc-menu-divider { height:1px; background:var(--border); margin:.3rem 0; }
+    .acc-menu-item.logout { color:#e53935; }
+
+    /* ── Content ── */
+    .acc-content { flex:1; min-width:0; }
+    .acc-section { display:none; }
+    .acc-section.active { display:block; }
+    .acc-card { background:var(--card-bg); border-radius:4px; box-shadow:var(--shadow); padding:1.5rem; margin-bottom:1rem; }
+    .acc-card-title { font-size:1.1rem; font-weight:800; color:var(--text); margin-bottom:1rem; display:flex; align-items:center; justify-content:space-between; }
+    .acc-card-title .badge { font-size:.7rem; background:#e8f5e9; color:#2e7d32; padding:2px 8px; border-radius:4px; font-weight:600; }
+
+    /* ── Profile ── */
+    .profile-row { display:flex; align-items:center; padding:.8rem 0; border-bottom:1px solid var(--border); }
+    .profile-row:last-child { border-bottom:none; }
+    .profile-label { width:160px; font-size:.85rem; color:var(--text-muted); font-weight:600; flex-shrink:0; }
+    .profile-value { font-size:.95rem; color:var(--text); font-weight:600; flex:1; }
+    .profile-edit-btn { font-size:.8rem; color:var(--primary); font-weight:700; cursor:pointer; background:none; border:none; padding:.3rem .6rem; }
+    .profile-edit-btn:hover { background:var(--active-bg); border-radius:4px; }
+    .profile-input { border:1px solid var(--border); border-radius:4px; padding:.5rem .7rem; font-size:.9rem; width:100%; max-width:300px; outline:none; font-family:inherit; background:var(--bg); color:var(--text); }
+    .profile-input:focus { border-color:var(--primary); }
+    .profile-avatar-lg { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,var(--primary),#7b68ee); color:#fff; display:flex; align-items:center; justify-content:center; font-size:2.2rem; font-weight:800; margin-right:1.5rem; }
+    .profile-save-btn { background:var(--primary); color:#fff; border:none; padding:.6rem 1.5rem; border-radius:4px; font-weight:700; cursor:pointer; font-size:.85rem; margin-top:.5rem; }
+    .profile-save-btn:hover { background:#1565c0; }
+
+    /* ── Orders ── */
+    .order-card { border:1px solid var(--border); border-radius:8px; padding:1rem; margin-bottom:.8rem; transition:box-shadow .15s; }
+    .order-card:hover { box-shadow:0 2px 12px rgba(0,0,0,.08); }
+    .order-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:.6rem; flex-wrap:wrap; gap:.5rem; }
+    .order-id { font-size:.8rem; color:var(--text-muted); font-weight:600; }
+    .order-status { font-size:.75rem; font-weight:700; padding:3px 10px; border-radius:12px; }
+    .order-status.delivered { background:#e8f5e9; color:#2e7d32; }
+    .order-status.transit { background:#fff3e0; color:#e65100; }
+    .order-status.cancelled { background:#ffebee; color:#c62828; }
+    .order-body { display:flex; gap:1rem; align-items:center; }
+    .order-img { width:64px; height:64px; object-fit:contain; border-radius:6px; background:var(--bg); padding:4px; border:1px solid var(--border); flex-shrink:0; }
+    .order-img-placeholder { width:64px; height:64px; border-radius:6px; background:linear-gradient(135deg,#e3f2fd,#bbdefb); display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+    .order-info { flex:1; }
+    .order-name { font-weight:600; color:var(--text); font-size:.9rem; margin-bottom:.2rem; }
+    .order-meta { font-size:.8rem; color:var(--text-muted); }
+    .order-price { font-weight:800; color:var(--text); font-size:1rem; text-align:right; }
+
+    /* ── Wishlist ── */
+    .wish-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; }
+    .wish-card { border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:all .2s; cursor:pointer; }
+    .wish-card:hover { box-shadow:0 4px 16px rgba(0,0,0,.1); transform:translateY(-2px); }
+    .wish-img { width:100%; height:150px; object-fit:contain; background:var(--bg); padding:1rem; }
+    .wish-img-placeholder { width:100%; height:150px; background:linear-gradient(135deg,#e8eaf6,#c5cae9); display:flex; align-items:center; justify-content:center; font-size:2.5rem; }
+    .wish-body { padding:.8rem; }
+    .wish-name { font-size:.82rem; color:var(--text); font-weight:500; line-height:1.3; margin-bottom:.4rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .wish-price { font-weight:800; color:var(--text); font-size:.95rem; }
+    .wish-remove { font-size:.75rem; color:#e53935; font-weight:600; cursor:pointer; margin-top:.3rem; display:inline-block; }
+    .wish-remove:hover { text-decoration:underline; }
+
+    /* ── Addresses ── */
+    .addr-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+    .addr-card { border:1px solid var(--border); border-radius:8px; padding:1rem; position:relative; background:var(--card-bg); }
+    .addr-card.default { border-color:var(--primary); background:var(--active-bg); }
+    .addr-type { font-size:.7rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); padding:2px 8px; background:var(--bg); border-radius:4px; display:inline-block; margin-bottom:.5rem; }
+    .addr-card.default .addr-type { background:var(--primary); color:#fff; }
+    .addr-name { font-weight:700; color:var(--text); font-size:.9rem; margin-bottom:.2rem; }
+    .addr-detail { font-size:.82rem; color:var(--text); opacity:0.8; line-height:1.5; margin-bottom:.5rem; }
+    .addr-phone { font-size:.82rem; color:var(--text); font-weight:600; }
+    .addr-actions { display:flex; gap:.8rem; margin-top:.6rem; }
+    .addr-actions button { background:none; border:none; font-size:.8rem; color:var(--primary); font-weight:600; cursor:pointer; padding:0; }
+    .addr-actions button:hover { text-decoration:underline; }
+    .addr-actions button.del { color:#e53935; }
+    .addr-add-card { border:2px dashed var(--text-muted); border-radius:8px; padding:2rem; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:all .15s; min-height:180px; }
+    .addr-add-card:hover { border-color:var(--primary); color:var(--primary); background:var(--active-bg); }
+
+    /* ── Notifications ── */
+    .notif-item { display:flex; gap:1rem; padding:.8rem 0; border-bottom:1px solid var(--border); align-items:flex-start; }
+    .notif-item:last-child { border:none; }
+    .notif-icon { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+    .notif-icon.price { background:#e8f5e9; color:#2e7d32; }
+    .notif-icon.order { background:#e3f2fd; color:#1565c0; }
+    .notif-icon.promo { background:#fff3e0; color:#e65100; }
+    .notif-text { font-size:.85rem; color:var(--text); line-height:1.4; }
+    .notif-text strong { font-weight:700; }
+    .notif-time { font-size:.72rem; color:var(--text-muted); margin-top:.2rem; }
+
+    /* ── Help ── */
+    .help-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1rem; }
+    .help-card { border:1px solid var(--border); border-radius:8px; padding:1.2rem; text-align:center; cursor:pointer; transition:all .15s; background:var(--card-bg); }
+    .help-card:hover { box-shadow:var(--shadow); border-color:var(--primary); }
+    .help-card-icon { font-size:2rem; margin-bottom:.5rem; }
+    .help-card-title { font-weight:700; color:var(--text); font-size:.9rem; margin-bottom:.3rem; }
+    .help-card-desc { font-size:.78rem; color:var(--text-muted); line-height:1.4; }
+
+    /* ── Empty State ── */
+    .empty-state { text-align:center; padding:3rem 1rem; color:var(--text-muted); }
+    .empty-state-icon { font-size:3rem; margin-bottom:.8rem; }
+    .empty-state-title { font-size:1.1rem; font-weight:700; color:var(--text); margin-bottom:.3rem; }
+    .empty-state-desc { font-size:.85rem; margin-bottom:1rem; }
+    .empty-state-btn { background:var(--primary); color:#fff; border:none; padding:.6rem 1.5rem; border-radius:4px; font-weight:700; cursor:pointer; font-size:.85rem; }
+
+    @media (max-width:768px) {
+      .acc-layout { flex-direction:column; }
+      .acc-sidebar { flex:none; }
+      .profile-row { flex-direction:column; gap:.3rem; }
+      .profile-label { width:auto; }
+      .addr-grid { grid-template-columns:1fr; }
+    }
+  </style>
+
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="acc-nav">
+    <a href="index.html" class="acc-nav-brand">🏷️ ShopIQ</a>
+    <div class="acc-nav-links">
+      <a href="index.html"><button class="acc-nav-btn">🏠 Home</button></a>
+      <button class="acc-nav-btn" id="themeToggle">🌓 Theme</button>
+      <button class="acc-nav-btn logout" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="acc-layout">
+    <!-- Sidebar -->
+    <aside class="acc-sidebar">
+      <div class="acc-sidebar-card">
+        <div class="acc-user-card">
+          <div class="acc-avatar" id="sidebarAvatar">U</div>
+          <div>
+            <div class="acc-user-hello">Hello,</div>
+            <div class="acc-user-name" id="sidebarName">User</div>
+          </div>
+        </div>
+      </div>
+      <div class="acc-sidebar-card">
+        <ul class="acc-menu">
+          <li class="acc-menu-section">My Account</li>
+          <li class="acc-menu-item active" data-section="profile"><span class="mi-icon">👤</span> My Profile</li>
+          <li class="acc-menu-item" data-section="orders"><span class="mi-icon">📦</span> My Orders</li>
+          <li class="acc-menu-item" data-section="wishlist"><span class="mi-icon">❤️</span> My Wishlist <span class="mi-badge" id="wishBadge">0</span></li>
+          <li class="acc-menu-divider"></li>
+          <li class="acc-menu-section">Settings</li>
+          <li class="acc-menu-item" data-section="addresses"><span class="mi-icon">📍</span> Manage Addresses</li>
+          <li class="acc-menu-item" data-section="notifications"><span class="mi-icon">🔔</span> Notifications <span class="mi-badge" id="notifBadge">3</span></li>
+          <li class="acc-menu-divider"></li>
+          <li class="acc-menu-item" data-section="help"><span class="mi-icon">❓</span> Help Center</li>
+          <li class="acc-menu-item logout" onclick="logout()"><span class="mi-icon">🚪</span> Logout</li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <div class="acc-content">
+
+      <!-- Profile Section -->
+      <div class="acc-section active" id="sec-profile">
+        <div class="acc-card">
+          <div class="acc-card-title">Personal Information <button class="profile-edit-btn" id="editBtn">Edit</button></div>
+          <div style="display:flex;align-items:center;margin-bottom:1.5rem;">
+            <div class="profile-avatar-lg" id="profileAvatar">U</div>
+            <div>
+              <div style="font-weight:800;font-size:1.2rem;color:#212121;" id="profileFullName">User</div>
+              <div style="font-size:.82rem;color:#878787;" id="profileEmail2">user@example.com</div>
+              <div style="font-size:.75rem;color:#2e7d32;margin-top:.2rem;">✓ Account Verified</div>
+            </div>
+          </div>
+          <div id="profileFields">
+            <div class="profile-row"><span class="profile-label">First Name</span><span class="profile-value" id="dispFirstName">Jane</span></div>
+            <div class="profile-row"><span class="profile-label">Last Name</span><span class="profile-value" id="dispLastName">Doe</span></div>
+            <div class="profile-row"><span class="profile-label">Email</span><span class="profile-value" id="dispEmail">jane@example.com</span></div>
+            <div class="profile-row"><span class="profile-label">Phone</span><span class="profile-value" id="dispPhone">Not set</span></div>
+            <div class="profile-row"><span class="profile-label">Gender</span><span class="profile-value" id="dispGender">Not set</span></div>
+          </div>
+          <div id="profileEditForm" style="display:none;">
+            <div class="profile-row"><span class="profile-label">First Name</span><input class="profile-input" id="editFirstName"></div>
+            <div class="profile-row"><span class="profile-label">Last Name</span><input class="profile-input" id="editLastName"></div>
+            <div class="profile-row"><span class="profile-label">Email</span><input class="profile-input" id="editEmail" type="email"></div>
+            <div class="profile-row"><span class="profile-label">Phone</span><input class="profile-input" id="editPhone" type="tel" placeholder="+91 xxxxx xxxxx"></div>
+            <div class="profile-row"><span class="profile-label">Gender</span>
+              <select class="profile-input" id="editGender" style="max-width:200px;">
+                <option value="">Select</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option>
+              </select>
+            </div>
+            <div style="margin-top:1rem;display:flex;gap:.6rem;">
+              <button class="profile-save-btn" id="saveBtn">Save</button>
+              <button class="profile-save-btn" id="cancelBtn" style="background:#fff;color:#212121;border:1px solid #c2c2c2;">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="acc-card-title">Account Settings</div>
+          <div class="profile-row"><span class="profile-label">Member Since</span><span class="profile-value" id="memberSince">April 2026</span></div>
+          <div class="profile-row"><span class="profile-label">Account Type</span><span class="profile-value">Free Member</span></div>
+          <div class="profile-row"><span class="profile-label">Price Alerts</span><span class="profile-value" style="color:#2e7d32;">Enabled ✓</span></div>
+        </div>
+      </div>
+
+      <!-- Orders Section -->
+      <div class="acc-section" id="sec-orders">
+        <div class="acc-card">
+          <div class="acc-card-title">My Orders</div>
+          <div id="ordersList"></div>
+        </div>
+      </div>
+
+      <!-- Wishlist Section -->
+      <div class="acc-section" id="sec-wishlist">
+        <div class="acc-card">
+          <div class="acc-card-title">My Wishlist <span class="badge" id="wishCount">0 items</span></div>
+          <div class="wish-grid" id="wishGrid"></div>
+        </div>
+      </div>
+
+      <!-- Addresses Section -->
+      <div class="acc-section" id="sec-addresses">
+        <div class="acc-card">
+          <div class="acc-card-title">Manage Addresses</div>
+          <div class="addr-grid" id="addrGrid"></div>
+        </div>
+      </div>
+
+      <!-- Notifications Section -->
+      <div class="acc-section" id="sec-notifications">
+        <div class="acc-card">
+          <div class="acc-card-title">Notifications</div>
+          <div id="notifList"></div>
+        </div>
+      </div>
+
+      <!-- Help Section -->
+      <div class="acc-section" id="sec-help">
+        <div class="acc-card">
+          <div class="acc-card-title">Help Center</div>
+          <div class="help-grid">
+            <div class="help-card"><div class="help-card-icon">🔍</div><div class="help-card-title">Search Issues</div><div class="help-card-desc">Having trouble finding products? Check our FAQ.</div></div>
+            <div class="help-card"><div class="help-card-icon">💰</div><div class="help-card-title">Price Alerts</div><div class="help-card-desc">Learn how to set up alerts for price drops.</div></div>
+            <div class="help-card"><div class="help-card-icon">🔗</div><div class="help-card-title">Store Links</div><div class="help-card-desc">How we compare prices across 5 stores.</div></div>
+            <div class="help-card"><div class="help-card-icon">🛡️</div><div class="help-card-title">Privacy & Security</div><div class="help-card-desc">Your data is stored locally. We never share it.</div></div>
+            <div class="help-card"><div class="help-card-icon">📧</div><div class="help-card-title">Contact Us</div><div class="help-card-desc">Email: support@shopiq.in</div></div>
+            <div class="help-card"><div class="help-card-icon">⭐</div><div class="help-card-title">Rate ShopIQ</div><div class="help-card-desc">Love our app? Leave us a review!</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="account.js"></script>
+  <script>
+    // Theme Toggle Logic
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark-theme');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark-theme');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+  </script>
+</body>
+</html>

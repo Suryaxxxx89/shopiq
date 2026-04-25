@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Create your free ShopIQ account – Compare prices across top Indian stores." />
+  <title>Sign Up – ShopIQ</title>
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body>
+
+  <div class="auth-layout">
+    <!-- Left Hero Image Section -->
+    <div class="auth-hero">
+      <div class="hero-overlay">
+        <h1>Join ShopIQ Today</h1>
+        <p>Unlock the power to track price drops, compare deals, and save more on every purchase.</p>
+      </div>
+    </div>
+
+    <!-- Right Form Section -->
+    <div class="auth-side">
+      <!-- Animated background blobs -->
+      <div class="bg-blobs" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+      </div>
+
+      <div class="auth-wrapper">
+
+        <a href="index.html" class="auth-brand" id="brandLogoLinkSignup">
+          <div class="auth-brand-ring">🏷️</div>
+          <span class="auth-brand-name">ShopIQ</span>
+        </a>
+
+        <div class="auth-card" id="signupCard">
+          <div class="auth-card-inner">
+
+            <div class="auth-header">
+              <h1 class="auth-title">Create account</h1>
+              <p class="auth-subtitle">Start comparing deals for free today</p>
+            </div>
+
+            <!-- Social sign-up -->
+            <div class="social-row">
+              <button class="social-btn" id="googleSignUpBtn" type="button">
+                <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                Sign up with Google
+              </button>
+              <button class="social-btn" id="githubSignUpBtn" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                Sign up with GitHub
+              </button>
+            </div>
+
+            <div class="divider"><span>or sign up with email</span></div>
+
+            <form id="signupForm" novalidate>
+
+              <div class="fields-row-2">
+                <div class="field-group">
+                  <label class="field-label" for="signupFirstName">First name</label>
+                  <div class="field-wrap">
+                    <svg class="field-icon" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg>
+                    <input class="field-input" type="text" id="signupFirstName" name="firstName"
+                           placeholder="Arjun" autocomplete="given-name" required />
+                  </div>
+                  <span class="field-error" id="signupFirstNameErr"></span>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="signupLastName">Last name</label>
+                  <div class="field-wrap">
+                    <svg class="field-icon" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg>
+                    <input class="field-input" type="text" id="signupLastName" name="lastName"
+                           placeholder="Sharma" autocomplete="family-name" required />
+                  </div>
+                  <span class="field-error" id="signupLastNameErr"></span>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="signupEmail">Email address</label>
+                <div class="field-wrap">
+                  <svg class="field-icon" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/></svg>
+                  <input class="field-input" type="email" id="signupEmail" name="email"
+                         placeholder="you@example.com" autocomplete="email" required />
+                </div>
+                <span class="field-error" id="signupEmailErr"></span>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="signupPhone">Phone number <span class="optional-tag">optional</span></label>
+                <div class="field-wrap">
+                  <span class="field-prefix">+91</span>
+                  <input class="field-input field-input-prefixed" type="tel" id="signupPhone" name="phone"
+                         placeholder="98765 43210" autocomplete="tel" maxlength="10" />
+                </div>
+                <span class="field-error" id="signupPhoneErr"></span>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="signupPassword">Password</label>
+                <div class="field-wrap">
+                  <svg class="field-icon" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="currentColor"/></svg>
+                  <input class="field-input" type="password" id="signupPassword" name="password"
+                         placeholder="••••••••" autocomplete="new-password" required />
+                  <button type="button" class="eye-btn" id="signupEyeBtn" aria-label="Toggle password visibility">
+                    <svg id="eyeIconSignup" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/></svg>
+                  </button>
+                </div>
+                <!-- Password strength bar -->
+                <div class="strength-wrap" id="strengthWrap" style="display:none;">
+                  <div class="strength-bar">
+                    <div class="strength-fill" id="strengthFill"></div>
+                  </div>
+                  <span class="strength-label" id="strengthLabel"></span>
+                </div>
+                <span class="field-error" id="signupPasswordErr"></span>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="signupConfirmPassword">Confirm password</label>
+                <div class="field-wrap">
+                  <svg class="field-icon" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="currentColor"/></svg>
+                  <input class="field-input" type="password" id="signupConfirmPassword" name="confirmPassword"
+                         placeholder="••••••••" autocomplete="new-password" required />
+                  <button type="button" class="eye-btn" id="signupConfirmEyeBtn" aria-label="Toggle confirm password visibility">
+                    <svg id="eyeIconConfirm" width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/></svg>
+                  </button>
+                </div>
+                <span class="field-error" id="signupConfirmErr"></span>
+              </div>
+
+              <!-- CAPTCHA -->
+              <div class="captcha-block" id="signupCaptchaBlock">
+                <div class="captcha-header">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#22c55e"/></svg>
+                  <span>Human verification</span>
+                  <button type="button" class="captcha-refresh" id="signupCaptchaRefresh" aria-label="Refresh CAPTCHA">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  </button>
+                </div>
+                <div class="captcha-canvas-wrap">
+                  <canvas id="signupCaptchaCanvas" width="220" height="60" aria-label="CAPTCHA image"></canvas>
+                </div>
+                <div class="field-wrap" style="margin-top:.5rem;">
+                  <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg>
+                  <input class="field-input" type="text" id="signupCaptchaInput"
+                         placeholder="Enter the code above" autocomplete="off" maxlength="6" />
+                </div>
+                <span class="field-error" id="signupCaptchaErr"></span>
+              </div>
+
+              <!-- Terms -->
+              <label class="terms-label" for="agreeTerms" id="agreeTermsLabel">
+                <input type="checkbox" id="agreeTerms" required />
+                <span class="custom-check"></span>
+                I agree to the <a href="#" class="auth-switch-link">Terms of Service</a> and
+                <a href="#" class="auth-switch-link">Privacy Policy</a>
+              </label>
+              <span class="field-error" id="agreeTermsErr"></span>
+
+              <button type="submit" class="auth-submit-btn" id="signupSubmitBtn">
+                <span id="signupBtnText">Create Account</span>
+                <span id="signupBtnSpinner" class="btn-spinner" style="display:none;"></span>
+              </button>
+
+            </form>
+
+            <p class="auth-switch">
+              Already have an account?
+              <a href="login.html" id="goToLoginLink" class="auth-switch-link">Sign in →</a>
+            </p>
+
+          </div>
+        </div>
+
+        <p class="auth-footer">© 2025 ShopIQ · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+</body>
+</html>

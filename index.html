@@ -1,163 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Compare prices of mobiles and laptops across Amazon, Flipkart, Reliance Digital, and Croma. Find the best deal in India." />
-  <title>ShopIQ – Find Your Best Deal</title>
+  <meta name="description" content="ShopIQ - Compare prices across Amazon, Flipkart, Croma and more. Find the best deals in India." />
+  <title>ShopIQ – Premium Price Comparison</title>
   <link rel="stylesheet" href="testp.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+      }
+      // Failsafe to hide splash even if testp.js fails
+      setTimeout(function() {
+        var s = document.getElementById('splashScreen');
+        if (s) {
+          s.style.opacity = '0';
+          s.style.transition = 'opacity 0.5s ease';
+          setTimeout(function() { s.style.display = 'none'; }, 500);
+        }
+      }, 3000);
+    })();
+  </script>
 </head>
-<body>
 
+<body>
   <!-- ==================== SPLASH SCREEN ==================== -->
-  <div id="splashScreen" aria-live="polite" aria-label="Loading ShopIQ">
-    <div class="splash-logo-ring">
-      <span class="splash-logo-icon">🏷️</span>
-    </div>
+  <div id="splashScreen">
+    <div class="splash-logo-ring"><span class="splash-logo-icon">🏷️</span></div>
     <div class="splash-brand">ShopIQ</div>
-    <div class="splash-tagline">Best deals across top Indian stores</div>
+    <div class="splash-tagline">Scanning the market for the best deals...</div>
     <div class="splash-spinner"></div>
-    <div class="splash-loading-text">Fetching latest prices…</div>
   </div>
 
-  <!-- ==================== SEARCH PAGE ==================== -->
-  <div id="searchPage" class="page">
-
-    <!-- Hero banner -->
-    <section style="background:linear-gradient(90deg,#2563eb 0%,#38bdf8 100%); border-radius:18px;
-                    box-shadow:0 8px 32px rgba(37,99,235,.18); padding:2.2rem 1.2rem 2.7rem;
-                    margin-bottom:1.2rem; display:flex; flex-direction:column; align-items:center;">
-      <div class="brand" style="color:#fff; border-left:4px solid #fff;">ShopIQ</div>
-      <h1 style="color:#fff; font-size:2.5rem; font-weight:900; margin-bottom:.5rem; letter-spacing:.5px;">
-        Find Your Best Deal
-      </h1>
-      <p style="color:#e0e7ef; font-size:1.1rem; margin-bottom:1.2rem; max-width:600px; text-align:center;">
-        Compare prices, specs, and reviews for mobiles and laptops.
-        Search, filter, and discover the best offers from top stores in India.
-      </p>
-
-      <!-- Search row -->
-      <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:1.2rem;">
-        <div style="position:relative; width:100%; max-width:700px; margin-bottom:.7rem;">
-          <input id="searchInput" class="selector" placeholder="Search products (e.g. iPhone 15, MacBook Air)" autocomplete="off"
-            style="width:100%; padding-left:2.7rem; padding-right:7.5rem; max-width:700px; background:#fff;
-                   border:1.5px solid #e0e0e0; color:#222; font-weight:400; border-radius:24px;
-                   box-shadow:0 2px 12px rgba(0,0,0,0.08); font-size:1.13rem; height:48px;
-                   outline:none; transition:border-color .2s;"
-            onfocus="this.style.borderColor='#4285f4'"
-            onblur="this.style.borderColor='#e0e0e0'" />
-          <!-- Search icon -->
-          <span style="position:absolute; left:1.1rem; top:50%; transform:translateY(-50%);
-                       font-size:1.45rem; color:#bdbdbd; pointer-events:none;">
-            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="11" cy="11" r="8" stroke="#bdbdbd" stroke-width="2"/>
-              <path d="M22 22l-5-5" stroke="#bdbdbd" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </span>
-          <!-- Search button -->
-          <button id="searchBtn"
-            style="position:absolute; right:.4rem; top:50%; transform:translateY(-50%);
-                   background:linear-gradient(90deg,#1e40af,#2563eb); color:#fff; border:none;
-                   border-radius:20px; padding:.38rem 1.1rem; font-size:.88rem; font-weight:700;
-                   letter-spacing:.2px; cursor:pointer; height:36px;
-                   box-shadow:0 4px 12px rgba(37,99,235,.35);
-                   transition:opacity .15s ease, transform .15s ease;">
-            Search
-          </button>
+  <!-- ==================== GLOBAL HEADER ==================== -->
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="brand-logo" onclick="location.reload()">
+          <span class="logo-icon">🏷️</span>
+          <span class="logo-text">ShopIQ</span>
         </div>
-
-        <!-- Filters -->
-        <div style="display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center; width:100%; max-width:700px;">
-          <select id="categoryFilter" class="selector" style="width:130px; background:#f1f5f9; border:1px solid #fff; color:#2563eb;">
-            <option value="all">All</option>
-            <option value="mobiles">Mobiles</option>
-            <option value="laptops">Laptops</option>
-          </select>
-
-          <select id="sortMode" class="selector" style="width:180px; background:#f1f5f9; border:1px solid #fff; color:#2563eb;">
-            <option value="none">Sort: Cheapest first</option>
-            <option value="expensive">Sort: Most expensive first</option>
-          </select>
-
-          <button id="clearSearch" class="selector"
-            style="max-width:120px; background:#2563eb; color:#fff; border:none; font-weight:700; cursor:pointer;">
-            Clear
-          </button>
-        </div>
-
       </div>
-    </section>
+      
+      <div class="header-center">
+        <div class="search-bar-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input id="searchInput" type="text" placeholder="Search for products, brands and more..." autocomplete="off" />
+          <button id="searchBtn">Search</button>
+        </div>
+      </div>
 
-    <!-- Store Filters (Shown after search) -->
-    <div id="storeFilters" style="display:none; flex-direction:row; gap:1rem; flex-wrap:wrap; justify-content:center; width:100%; margin-bottom:1rem; font-size:.95rem; color:#475569; padding: .5rem 1rem;">
-      <span style="font-weight:700; margin-right:.5rem; color:#1e293b;">Compare stores:</span>
-      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
-        <input type="checkbox" value="amazon" checked /> Amazon
-      </label>
-      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
-        <input type="checkbox" value="flipkart" checked /> Flipkart
-      </label>
-      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
-        <input type="checkbox" value="croma" checked /> Croma
-      </label>
-      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
-        <input type="checkbox" value="reliance" checked /> Reliance Digital
-      </label>
-      <label style="cursor:pointer; display:flex; align-items:center; gap:.3rem;">
-        <input type="checkbox" value="tatacliq" checked /> Tata CLiQ
-      </label>
+      <div class="header-right">
+        <div class="nav-links">
+          <a href="account.html" class="nav-link"><i class="far fa-user"></i> Login</a>
+          <a href="#" class="nav-link" onclick="showWishlistPage(); return false;"><i class="fas fa-heart"></i> Wishlist <span id="wishlistCount" class="badge" style="display:none;">0</span></a>
+          <a href="#" class="nav-link" onclick="showCartPage(); return false;"><i class="fas fa-shopping-cart"></i> Cart <span id="cartCount" class="badge" style="display:none;">0</span></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== CATEGORY NAVIGATION ==================== -->
+  <nav class="category-nav">
+    <div class="cat-nav-inner">
+      <div class="cat-item" onclick="searchQuery('Mobiles')">
+        <div class="cat-img">📱</div>
+        <span>Mobiles</span>
+      </div>
+      <div class="cat-item" onclick="searchQuery('Laptops')">
+        <div class="cat-img">💻</div>
+        <span>Laptops</span>
+      </div>
+      <div class="cat-item" onclick="searchQuery('Television')">
+        <div class="cat-img">📺</div>
+        <span>TVs</span>
+      </div>
+      <div class="cat-item" onclick="searchQuery('Fashion')">
+        <div class="cat-img">👗</div>
+        <span>Fashion</span>
+      </div>
+      <div class="cat-item" onclick="searchQuery('Home Appliances')">
+        <div class="cat-img">🏠</div>
+        <span>Home</span>
+      </div>
+      <div class="cat-item" onclick="searchQuery('Beauty')">
+        <div class="cat-img">💄</div>
+        <span>Beauty</span>
+      </div>
+      <div class="cat-item" onclick="searchQuery('Toys')">
+        <div class="cat-img">🧸</div>
+        <span>Toys</span>
+      </div>
+      <div class="cat-item" onclick="searchQuery('Grocery')">
+        <div class="cat-img">🛒</div>
+        <span>Grocery</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main id="mainContent">
+    
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page-view">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-slider">
+          <div class="hero-slide active">
+            <div class="hero-content">
+              <h1>BIG SAVING DAYS IS BACK!</h1>
+              <p>Up to 80% Off on Top Electronics & Fashion</p>
+              <button class="hero-btn" onclick="searchQuery('Deals')">Shop Now</button>
+            </div>
+            <div class="hero-image">🔥</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Sections -->
+      <section class="featured-section">
+        <div class="section-header">
+          <h2>Deals of the Day</h2>
+          <span class="view-all">View All <i class="fas fa-chevron-right"></i></span>
+        </div>
+        <div class="horizontal-scroll" id="dealsContainer">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <section class="featured-section">
+        <div class="section-header">
+          <h2>Top Mobile Brands</h2>
+          <span class="view-all">View All <i class="fas fa-chevron-right"></i></span>
+        </div>
+        <div class="horizontal-scroll" id="brandsContainer">
+          <!-- Populated by JS -->
+        </div>
+      </section>
     </div>
 
-    <!-- Results list -->
-    <div id="resultsList" class="card"
-      style="min-height:120px; background:linear-gradient(135deg,#e0e7ef 0%,#f8fafc 100%);
-             border-radius:18px; box-shadow:0 6px 24px rgba(37,99,235,.08);">
+    <!-- SEARCH RESULTS PAGE -->
+    <div id="searchPage" class="page-view" style="display:none;">
+      <div class="results-layout">
+        <aside class="results-sidebar">
+          <div class="filter-card">
+            <div class="filter-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #f0f0f0; padding-bottom:10px;">
+              <h3 style="margin:0;">Filters</h3>
+              <span id="clearSearch" style="color:var(--primary-light); font-size:12px; font-weight:700; cursor:pointer;">CLEAR ALL</span>
+            </div>
+            <div class="filter-group">
+              <label>Category</label>
+              <select id="categoryFilter">
+                <option value="all">All Categories</option>
+                <option value="mobiles">Mobiles</option>
+                <option value="laptops">Laptops</option>
+                <option value="television">Televisions</option>
+                <option value="fashion">Fashion</option>
+                <option value="home">Home</option>
+                <option value="toys">Toys</option>
+                <option value="grocery">Grocery</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Sort By</label>
+              <select id="sortMode">
+                <option value="none">Relevance</option>
+                <option value="low">Price: Low to High</option>
+                <option value="high">Price: High to Low</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Stores</label>
+              <div class="store-checkboxes" id="storeFilters">
+                <label><input type="checkbox" checked value="amazon"> Amazon</label>
+                <label><input type="checkbox" checked value="flipkart"> Flipkart</label>
+                <label><input type="checkbox" checked value="croma"> Croma</label>
+                <label><input type="checkbox" checked value="reliance"> Reliance Digital</label>
+                <label><input type="checkbox" checked value="tatacliq"> Tata CLiQ</label>
+              </div>
+            </div>
+          </div>
+        </aside>
+        
+        <section class="results-main">
+          <div id="resultsList">
+            <!-- Results populated by JS -->
+          </div>
+          
+          <div id="pasteLinkSection" style="display:none;" class="fallback-card">
+            <h3>Can't find it?</h3>
+            <p>Paste a product link and we'll track the price for you.</p>
+            <div class="link-input-row">
+              <input type="text" id="productLinkInput" placeholder="Paste link here..." />
+              <button id="addByLinkBtn">Fetch</button>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
 
-    <!-- Specs card (inline) -->
-    <div id="specsCard" class="chart-card" style="display:none;">
-      <div class="chart-title">Selected product specs</div>
-      <div id="productDetails" class="chart-box" style="display:block; margin-top:0;"></div>
+    <!-- WISHLIST PAGE -->
+    <div id="wishlistPage" class="page-view" style="display:none; padding: 2rem; max-width: 1200px; margin: 0 auto;">
+      <h2 style="margin-bottom: 1.5rem; color: #1e293b; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fas fa-heart" style="color: #ef4444;"></i> My Wishlist
+      </h2>
+      <div id="wishlistContainer" class="results-grid">
+        <!-- Wishlist items injected here -->
+      </div>
     </div>
 
-    <!-- Price graph card (inline) -->
-    <div id="graphCard" class="chart-card" style="display:none;">
-      <div class="chart-title">Price difference graph (relative to lowest seller)</div>
-      <div id="priceChart" class="chart-box"></div>
-      <div id="storeLinks" class="store-links-area" style="display:none;"></div>
+    <!-- CART PAGE -->
+    <div id="cartPage" class="page-view" style="display:none; padding: 2rem; max-width: 1200px; margin: 0 auto;">
+      <h2 style="margin-bottom: 1.5rem; color: #1e293b; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fas fa-shopping-cart" style="color: #2563eb;"></i> My Cart
+      </h2>
+      <div id="cartContainer">
+        <!-- Cart items injected here -->
+      </div>
     </div>
 
-  </div><!-- /searchPage -->
+    <!-- COMPARE PAGE -->
+    <div id="comparePage" class="page-view" style="display:none;">
+      <div class="pdp-container">
+        <div class="pdp-header">
+          <button onclick="goBackView()" class="pdp-back-btn"><i class="fas fa-arrow-left"></i></button>
+          <div class="pdp-logo">🏷️ ShopIQ</div>
+        </div>
+        
+        <div class="pdp-content">
+          <div class="pdp-left">
+            <div class="pdp-image-wrap">
+              <img id="compareProductImg" src="" alt="Product" />
+            </div>
+            <div class="pdp-gallery" id="productGallery">
+              <!-- Thumbnails populated by JS -->
+            </div>
+            <div class="pdp-actions">
+              <button id="pdpWishlistBtn" class="pdp-wishlist-btn"><i class="far fa-heart"></i></button>
+              <button id="pdpCartBtn" class="add-to-cart-btn" style="flex:1; justify-content:center; padding:16px; margin-top:0;"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+            </div>
+            <div class="pdp-actions" style="margin-top:12px;">
+              <a id="buyLowestBtn" href="#" target="_blank" class="pdp-buy-btn primary">BUY NOW</a>
+              <a id="buyLowestBtn2" href="#" target="_blank" class="pdp-buy-btn secondary">VIEW ON STORE</a>
+            </div>
+          </div>
+          
+          <div class="pdp-right">
+            <h1 id="compareTitle">Product Title</h1>
+            <div class="pdp-price-row">
+              <span id="compareBestPrice" class="main-price"></span>
+              <span id="compareMrp" class="old-price"></span>
+              <span id="compareDiscount" class="discount-badge"></span>
+            </div>
+            <div id="compareSummary" style="margin-top: 10px; font-size: 0.9rem; color: #64748b;"></div>
+            
+            <div class="store-compare-list">
+              <h3>Store Comparison</h3>
+              <div id="storeLinksCompare"></div>
+              <div id="priceChartCompare" style="margin-top:20px;"></div>
+            </div>
 
+            <div class="pdp-description-section">
+              <h3>Product Specifications</h3>
+              <div id="specsTableWrap"></div>
+            </div>
 
-  <!-- ==================== COMPARE PAGE ==================== -->
-  <div id="comparePage" class="page" style="display:none;">
-    <header>
-      <div class="brand">ShopIQ</div>
-      <h1>Comparison Interface</h1>
-      <p>Detailed specs and seller price graph for the selected product.</p>
-    </header>
+            <div class="history-section">
+              <h3>Price History</h3>
+              <div class="history-card" id="priceHistoryCard">
+                <svg id="historyChartSvg" width="100%" height="250" style="width:100%; height:250px;"></svg>
+                <div id="priceInsight" class="price-insight"></div>
+              </div>
+            </div>
 
-    <button id="backButton" class="back-btn" style="margin-bottom:.7rem;">← Back to Search</button>
-
-    <div id="compareHeader" class="card" style="padding:.8rem; margin-bottom:.6rem;">
-      <div id="compareTitle"   style="font-weight:800; font-size:1.05rem; color:#0f172a;"></div>
-      <div id="compareSummary" style="color:#475569; font-size:.9rem;"></div>
+            <div class="reviews-section">
+              <h3>Customer Reviews</h3>
+              <div class="reviews-summary">
+                <div class="rating-big">4.4 <i class="fas fa-star"></i></div>
+                <div class="rating-info">12,450 Ratings & 890 Reviews</div>
+              </div>
+              <div id="pdpReviewsList" class="reviews-list">
+                <!-- Reviews populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </main>
 
-    <div id="specsCardCompare" class="chart-card">
-      <div class="chart-title">Product specs</div>
-      <div id="productDetailsCompare" class="chart-box"></div>
-    </div>
-
-    <div id="graphCardCompare" class="chart-card">
-      <div class="chart-title">Price graph</div>
-      <div id="priceChartCompare" class="chart-box"></div>
-      <div id="storeLinksCompare" class="store-links-area" style="display:none;"></div>
-    </div>
-
-  </div><!-- /comparePage -->
-
-  <script src="testp.js"></script>
+  <script src="testp.js?v=2"></script>
 </body>
 </html>

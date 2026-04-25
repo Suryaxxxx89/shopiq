@@ -1,0 +1,1177 @@
+/**
+ * ShopIQ – main application logic
+ */
+
+// ── AUTH CHECK ─────────────────────────────────────────────────────────────
+(function() {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  const isAuthPage = window.location.pathname.includes('login.html') || 
+                     window.location.pathname.includes('signup.html');
+  
+  if (!isLoggedIn && !isAuthPage) {
+    window.location.href = 'login.html';
+  }
+})();
+
+function logout() {
+  localStorage.removeItem('isLoggedIn');
+  window.location.href = 'login.html';
+}
+
+// ── CONFIG ─────────────────────────────────────────────────────────────────
+// Backend server URL - point to your running Node.js server
+// Default: http://localhost:3000 (for local development with 'npm start')
+// Change only if you're running the server on a different port/domain
+const API_URL = 'http://localhost:3000';
+
+// For production deployment, change to your server URL:
+// const API_URL = 'https://your-domain.com';
+
+const PROXY_URL = API_URL; // Legacy compatibility
+
+// Only results from these stores will be shown
+const STORES = [
+  {
+    key: 'amazon',
+    sourcePattern: /amazon/i,
+    linkPattern: /amazon\.in/i,
+    label: 'Amazon',
+    cls: 'store-link-amazon',
+    barColor: '#f97316',
+    logo: 'https://static.vecteezy.com/system/resources/previews/019/136/322/original/amazon-logo-amazon-icon-free-free-vector.jpg',
+  },
+  {
+    key: 'flipkart',
+    sourcePattern: /flipkart/i,
+    linkPattern: /flipkart\.com/i,
+    label: 'Flipkart',
+    cls: 'store-link-flipkart',
+    barColor: '#1d4ed8',
+    logo: 'https://tse2.mm.bing.net/th/id/OIP.OQrbMsmN86RrB-hXq7AfSQHaHY?rs=1&pid=ImgDetMain&o=7&rm=3',
+  },
+  {
+    key: 'croma',
+    sourcePattern: /croma/i,
+    linkPattern: /croma\.com/i,
+    label: 'Croma',
+    cls: 'store-link-croma',
+    barColor: '#0f766e',
+    logo: 'https://brandlogovector.com/wp-content/uploads/2021/11/Croma-Logo-300x100.png',
+  },
+  {
+    key: 'reliance',
+    sourcePattern: /reliance/i,
+    linkPattern: /reliancedigital\.in/i,
+    label: 'Reliance Digital',
+    cls: 'store-link-reliance',
+    barColor: '#dc2626',
+    logo: 'https://www.shopickr.com/wp-content/uploads/2018/07/reliance-digital.png?v=200',
+  },
+  {
+    key: 'tatacliq',
+    sourcePattern: /tata\s*cliq/i,
+    linkPattern: /tatacliq\.com/i,
+    label: 'Tata CLiQ',
+    cls: 'store-link-tatacliq',
+    barColor: '#7c3aed',
+    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5d/Tata_Cliq_Logo.png/250px-Tata_Cliq_Logo.png',
+  },
+];
+
+// ── State ──────────────────────────────────────────────────────────────────
+let currentResults = [];   // all filtered results (sorted)
+let bestPerStore = {};   // cheapest item per store key
+let searchDebounce = null;
+let rawSerpResults = []; // cache raw search results for local filtering
+let productDataMap = {}; // Map to store original product data with price history
+
+// ── DOM refs ───────────────────────────────────────────────────────────────
+const splashEl = document.getElementById('splashScreen');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const categoryFilter = document.getElementById('categoryFilter');
+const sortMode = document.getElementById('sortMode');
+const clearSearch = document.getElementById('clearSearch');
+const storeCheckboxes = document.querySelectorAll('#storeFilters input[type="checkbox"]');
+const resultsList = document.getElementById('resultsList');
+const graphCard = document.getElementById('graphCard');
+const priceChart = document.getElementById('priceChart');
+const storeLinks = document.getElementById('storeLinks');
+
+// ── Splash ─────────────────────────────────────────────────────────────────
+function hideSplash() { splashEl.classList.add('hidden'); }
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function openInNewTab(url) {
+  if (!url) return;
+  const w = window.open(url, '_blank', 'noopener,noreferrer');
+  if (w) w.opener = null;
+}
+
+function fmt(price) {
+  return '₹' + Number(price).toLocaleString('en-IN');
+}
+
+// Generate synthetic price history for products that don't have real data
+function generateSyntheticHistory(product) {
+  const history = {};
+  const storeKeys = ['amazon', 'flipkart', 'reliance', 'croma', 'tatacliq'];
+  const dates = ['2026-02-15', '2026-03-01', '2026-03-15', '2026-04-01', '2026-04-15'];
+
+  // Use a seeded-ish random based on product title for consistency
+  const title = (product.brand || product.title || 'unknown').toString();
+  const seed = title.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  const pseudoRandom = (i) => {
+    const x = Math.sin(seed * 9301 + i * 49297) * 49297;
+    return x - Math.floor(x);
+  };
+
+  let idx = 0;
+  storeKeys.forEach(store => {
+    if (product[store]) {
+      const currentPrice = product[store];
+      const variation = 0.06 + pseudoRandom(idx++) * 0.09; // 6-15% higher at start
+      const points = [];
+
+      dates.forEach((date, i) => {
+        const progress = i / (dates.length - 1);
+        const factor = 1 + variation * (1 - progress);
+        // Round to nearest 100 and add 99 for realism
+        let price = Math.round(currentPrice * factor / 100) * 100 - 1;
+        if (i === dates.length - 1) price = currentPrice; // ensure last = current
+        points.push({ date, price });
+      });
+
+      history[store] = points;
+    }
+  });
+
+  return history;
+}
+
+function matchStore(item) {
+  const src = item.source || '';
+  const link = item.link || '';
+  return STORES.find(s =>
+    s.sourcePattern.test(src) || s.linkPattern.test(link)
+  ) ?? null;
+}
+
+function sortItems(items, mode) {
+  const arr = [...items];
+  if (mode === 'expensive') return arr.sort((a, b) => b.price - a.price);
+  return arr.sort((a, b) => a.price - b.price);   // default: cheapest first
+}
+
+// ── UI state helpers ───────────────────────────────────────────────────────
+function showLoading(msg = 'Searching prices across stores…') {
+  if (resultsList) {
+    resultsList.innerHTML = `
+      <div class="loading-indicator">
+        <div class="spin"></div>
+        <span>${msg}</span>
+      </div>`;
+  }
+  if (graphCard) graphCard.style.display = 'none';
+  const specsCard = document.getElementById('specsCard');
+  if (specsCard) specsCard.style.display = 'none';
+}
+
+function showError(msg) {
+  if (resultsList) {
+    resultsList.innerHTML = `<div class="error-state">⚠️ ${msg}</div>`;
+  }
+  if (graphCard) graphCard.style.display = 'none';
+}
+
+function showEmpty(msg = 'Type a product name to compare prices across Amazon, Flipkart, Croma & Reliance Digital.') {
+  if (resultsList) {
+    resultsList.innerHTML = `
+      <div style="padding:2rem;text-align:center;color:#64748b;font-size:.95rem;line-height:1.6;">
+        <div style="font-size:2rem;margin-bottom:.5rem;">🔍</div>
+        ${msg}
+      </div>`;
+  }
+  if (graphCard) graphCard.style.display = 'none';
+  const specsCard = document.getElementById('specsCard');
+  if (specsCard) specsCard.style.display = 'none';
+  const storeFilters = document.getElementById('storeFilters');
+  if (storeFilters) storeFilters.style.display = 'none';
+}
+
+// ── SerpAPI call ───────────────────────────────────────────────────────────
+async function fetchPrices(rawQuery) {
+  if (!rawQuery || rawQuery.length < 2) { showEmpty(); return; }
+
+  showLoading('🔍 Searching across all stores...');
+
+  try {
+    // Try to fetch from backend server first (real-time scraping)
+    try {
+      console.log(`Fetching from: ${API_URL}/api/search?q=${encodeURIComponent(rawQuery)}`);
+      const response = await Promise.race([
+        fetch(`${API_URL}/api/search?q=${encodeURIComponent(rawQuery)}`),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout after 8s')), 8000))
+      ]);
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        console.log(`API Response:`, data);
+        
+        if (data.results && data.results.length > 0) {
+          console.log(`✅ Got ${data.results.length} results from backend server`);
+          
+          // Transform API response to match expected format
+          const shopping_results = data.results.map(product => ({
+            title: product.title,
+            link: product.link || '#',
+            extracted_price: product.price,
+            price: product.priceStr || '₹' + product.price.toLocaleString('en-IN'),
+            source: product.source,
+            thumbnail: product.image || '',
+            delivery: product.delivery || 'Check store for delivery info',
+            rating: product.rating || null,
+            reviews: product.reviews || null,
+            allStorePrices: product.allStorePrices || {}
+          }));
+
+          productDataMap = {};
+          shopping_results.forEach(product => {
+            productDataMap[product.title] = product;
+          });
+
+          processAndRender(shopping_results);
+          console.log('✅ Successfully rendered live data from backend server');
+          return;
+        } else {
+          console.warn('⚠️ Backend returned empty results');
+        }
+      } else {
+        console.warn(`⚠️ Backend returned status: ${response.status}`);
+      }
+    } catch (serverError) {
+      console.warn('⚠️ Backend server error (will use fallback):', serverError.message);
+    }
+
+    // FALLBACK: Load from local data.json
+    console.log('📦 Using local fallback data from data.json...');
+    const res = await fetch('data.json');
+    if (!res.ok) {
+      showError('Failed to load product data. Please refresh the page.');
+      return;
+    }
+
+    const data = await res.json();
+    const category = categoryFilter.value;
+    let products = [];
+    
+    if (category === 'all') {
+      Object.keys(data).forEach(key => {
+        if (Array.isArray(data[key])) {
+          products = products.concat(data[key]);
+        }
+      });
+    } else {
+      products = data[category] || [];
+    }
+
+    // Filter products based on search query
+    const searchTerms = rawQuery.toLowerCase().split(/\s+/).filter(t => t.length > 0);
+    const filteredProducts = products.filter(product => {
+      const brandLower = product.brand.toLowerCase();
+      const specsLower = (product.specs?.details || '').toLowerCase();
+      const combinedText = `${brandLower} ${specsLower}`;
+      return searchTerms.every(term => combinedText.includes(term));
+    });
+
+    if (filteredProducts.length === 0) {
+      showEmpty(`No products found matching "${rawQuery}". Try: iPhone, Samsung, OnePlus, MacBook, etc.`);
+      return;
+    }
+
+    // Create results with ALL store prices
+    const shopping_results = [];
+    filteredProducts.forEach(product => {
+      // For each product, create multiple entries - one per store with a price
+      STORES.forEach(store => {
+        const urlKey = store.key + 'Url';
+        const altUrlKey = store.key === 'tatacliq' ? 'tataCliqUrl' : urlKey;
+        const productUrl = product[urlKey] || product[altUrlKey];
+        const storePrice = product[store.key];
+        
+        if (productUrl && storePrice) {
+          shopping_results.push({
+            title: product.brand,
+            link: productUrl,
+            extracted_price: storePrice,
+            price: '₹' + storePrice.toLocaleString('en-IN'),
+            source: store.label,
+            store: store.key,
+            thumbnail: product.specs?.image || '',
+            delivery: 'Free delivery',
+            rating: 4.5,
+            reviews: 100,
+            allStorePrices: Object.fromEntries(
+              STORES
+                .filter(s => product[s.key])
+                .map(s => [s.key, { price: product[s.key], source: s.label, link: product[s.key + 'Url'] || product[s.key === 'tatacliq' ? 'tataCliqUrl' : s.key + 'Url'] }])
+            )
+          });
+        }
+      });
+    });
+
+    if (shopping_results.length === 0) {
+      showEmpty(`No products found matching "${rawQuery}". Try: iPhone, Samsung, OnePlus, MacBook, etc.`);
+      return;
+    }
+
+    productDataMap = {};
+    filteredProducts.forEach(product => {
+      productDataMap[product.brand] = product;
+    });
+
+    processAndRender(shopping_results);
+    console.log(`✅ Rendered ${shopping_results.length} results from fallback data (${filteredProducts.length} unique products across multiple stores)`);
+
+  } catch (error) {
+    console.error('Search error:', error);
+    showError(`Error searching products: ${error.message}`);
+  }
+}
+
+// ── Process results ────────────────────────────────────────────────────────
+function processAndRender(raw) {
+  rawSerpResults = raw; // save raw results to avoid network call when filtering stores
+
+  const activeStores = Array.from(storeCheckboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+  console.log(`Processing ${raw.length} raw results. Active stores: ${activeStores.join(', ')}`);
+
+  // Group by product title to show best price and all store options
+  const productMap = {};
+  
+  raw.forEach(item => {
+    if (!item.extracted_price) return;
+    
+    const store = matchStore(item);
+    if (!store) {
+      console.warn('Could not match store for item:', item);
+      return;
+    }
+    
+    if (!activeStores.includes(store.key)) return;
+
+    const titleKey = item.title.toLowerCase().trim();
+    
+    // Stricter fuzzy matching to group the same product from different stores
+    let matchedKey = null;
+    const currentWords = titleKey.split(/[\s\-\(\),]+/).filter(w => w.length > 0);
+    
+    const isModelWord = (w) => (/^[0-9]+$/.test(w) && parseInt(w) < 100) || ['pro', 'max', 'plus', 'ultra', 'fe', 'air', 'm1', 'm2', 'm3', 'fold', 'flip'].includes(w);
+    const currentModels = currentWords.filter(isModelWord).sort().join(',');
+
+    for (const existingKey of Object.keys(productMap)) {
+      if (existingKey === titleKey) {
+        // Prevent grouping if the store already has this exact product (e.g. Amazon returned duplicates)
+        if (!productMap[existingKey].storeVariants[store.key]) {
+           matchedKey = existingKey;
+           break;
+        }
+      }
+      
+      // Do not group if the existing product already has a variant from THIS store!
+      // (This prevents an Amazon product from merging into another Amazon product)
+      if (productMap[existingKey].storeVariants[store.key]) continue;
+      
+      const existingWords = existingKey.split(/[\s\-\(\),]+/).filter(w => w.length > 0);
+      const existingModels = existingWords.filter(isModelWord).sort().join(',');
+      
+      // Must have the exact same model modifiers (e.g., '15' vs '15,pro,max')
+      if (currentModels !== existingModels) continue;
+      
+      let matches = 0;
+      for (const word of currentWords) {
+        if (word.length > 1 && existingWords.includes(word)) matches++;
+      }
+      
+      const len1 = currentWords.filter(w=>w.length>1).length;
+      const len2 = existingWords.filter(w=>w.length>1).length;
+      if (len1 === 0 || len2 === 0) continue;
+      
+      const ratioMin = matches / Math.min(len1, len2);
+      if (ratioMin >= 0.8) {
+        matchedKey = existingKey;
+        break;
+      }
+    }
+    
+    const targetKey = matchedKey || titleKey;
+    
+    if (!productMap[targetKey]) {
+      productMap[targetKey] = {
+        title: item.title,
+        price: item.extracted_price,
+        priceStr: item.price || fmt(item.extracted_price),
+        thumbnail: item.thumbnail || '',
+        link: item.link || '#',
+        source: item.source || '',
+        delivery: item.delivery || '',
+        rating: item.rating || null,
+        reviews: item.reviews || null,
+        store,
+        storeVariants: {}
+      };
+    }
+    
+    // Track this product across all stores
+    productMap[targetKey].storeVariants[store.key] = {
+      price: item.extracted_price,
+      priceStr: item.price || fmt(item.extracted_price),
+      source: item.source,
+      link: item.link,
+      rating: item.rating,
+      delivery: item.delivery,
+      store: store
+    };
+    
+    // Update main entry to show cheapest option
+    if (item.extracted_price < productMap[targetKey].price) {
+      productMap[targetKey].price = item.extracted_price;
+      productMap[targetKey].priceStr = item.price || fmt(item.extracted_price);
+      productMap[targetKey].source = item.source;
+      productMap[targetKey].store = store;
+      productMap[targetKey].link = item.link;
+      productMap[targetKey].delivery = item.delivery;
+    }
+  });
+
+  const mapped = Object.values(productMap).filter(Boolean);
+
+  console.log(`Mapped to ${mapped.length} unique products`);
+
+  if (mapped.length === 0) {
+    showEmpty('No results found from the tracked stores.<br>Try a more specific product name.');
+    return;
+  }
+
+  currentResults = sortItems(mapped, sortMode.value);
+
+  // Filter out extreme outliers (like cheap accessories) before calculating best per store
+  let validForChart = currentResults;
+  if (currentResults.length > 2) {
+    const prices = currentResults.map(i => i.price).sort((a, b) => a - b);
+    const q1 = prices[Math.floor(prices.length * 0.25)];
+    const q3 = prices[Math.floor(prices.length * 0.75)];
+    const iqr = q3 - q1;
+    // Lower bound: exclude things that are much cheaper than the main cluster (accessories)
+    const lowerBound = Math.max(0, q1 - 1.5 * iqr);
+    // Alternatively, if the cheapest item is < 20% of median, it's probably an accessory
+    const median = prices[Math.floor(prices.length * 0.5)];
+    
+    validForChart = currentResults.filter(item => {
+      // Exclude if price is suspiciously low compared to median (e.g., a case vs a phone)
+      if (item.price < median * 0.2) return false;
+      return true;
+    });
+    
+    if (validForChart.length === 0) validForChart = currentResults;
+  }
+
+  // Best per store (cheapest)
+  bestPerStore = {};
+  validForChart.forEach(item => {
+    if (!bestPerStore[item.store.key] || item.price < bestPerStore[item.store.key].price) {
+      bestPerStore[item.store.key] = item;
+    }
+  });
+
+  console.log(`Best per store (filtered for chart):`, Object.keys(bestPerStore).map(k => `${k}: ₹${bestPerStore[k].price}`).join(', '));
+
+  const storeFiltersEl = document.getElementById('storeFilters');
+  if (storeFiltersEl) {
+    storeFiltersEl.style.display = 'flex';
+  }
+
+  renderCards(currentResults);
+  renderChart();
+
+  // Show paste link section if results are synthetic or empty
+  const pasteLinkSection = document.getElementById('pasteLinkSection');
+  if (pasteLinkSection) {
+    const hasRealResults = currentResults.some(r => !r.isSynthetic);
+    pasteLinkSection.style.display = !hasRealResults ? 'flex' : 'none';
+  }
+}
+
+// ── Product cards ──────────────────────────────────────────────────────────
+function renderCards(items) {
+  if (!resultsList) {
+    console.warn('Results list element not found');
+    return;
+  }
+  
+  const bestLinks = new Set(Object.values(bestPerStore).map(i => i.link));
+
+  let html = `
+    <div class="stack" style="margin-bottom:.75rem;">
+      <span class="pill">Results: ${items.length}</span>
+      <span class="pill">Comparing ${STORES.length} stores · sorted by lowest price</span>
+    </div>
+    <div class="results-grid">`;
+
+  items.forEach((item, idx) => {
+    const isBest = bestLinks.has(item.link);
+    
+    // Count available stores for this product
+    const storeCount = item.storeVariants ? Object.keys(item.storeVariants).length : 1;
+    const hasMultipleStores = storeCount > 1;
+
+    // Check if this product has price history data
+    const pData = productDataMap[item.title];
+    const hasHistory = pData && (pData.priceHistory || pData.amazon || pData.flipkart);
+    
+    // Build store price list
+    let storeVariantsHtml = '';
+    if (hasMultipleStores && item.storeVariants) {
+      storeVariantsHtml = '<div style="font-size:.8rem; margin-top:.5rem; padding-top:.5rem; border-top:1px solid #e2e8f0;">';
+      storeVariantsHtml += '<div style="color:#64748b; margin-bottom:.4rem; font-weight:600;">Available on:</div>';
+      
+      const sortedVariants = Object.entries(item.storeVariants)
+        .sort((a, b) => a[1].price - b[1].price);
+      
+      sortedVariants.forEach(([storeKey, variant]) => {
+        const isCurrentBest = variant.price === item.price;
+        const badgeStyle = isCurrentBest ? 'background:#d1fae5;color:#065f46;' : 'background:#f1f5f9;color:#475569;';
+        storeVariantsHtml += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;padding:.3rem .4rem;border-radius:4px;${badgeStyle}">
+          <span style="font-weight:500;">${variant.store.label}</span>
+          <span style="font-weight:700;">${variant.priceStr}</span>
+        </div>`;
+      });
+      
+      storeVariantsHtml += '</div>';
+    }
+
+    const isSynthetic = item.isSynthetic;
+    const isFallback = item.isFallback;
+
+    html += `
+      <div class="product-card${isBest ? ' best-deal-card' : ''}${isSynthetic ? ' synthetic-card' : ''}" data-index="${idx}">
+        ${isBest && !isSynthetic ? `<div class="best-deal-badge">🏆 Best Price: ${item.store.label}</div>` : ''}
+        ${isSynthetic ? `<div style="position:absolute;top:.6rem;right:.6rem;background:#475569;color:white;padding:.2rem .6rem;border-radius:12px;font-size:.75rem;font-weight:700;">Marketplace Search</div>` : ''}
+        ${isFallback && !isBest ? `<div style="position:absolute;top:.6rem;right:.6rem;background:#f59e0b;color:white;padding:.2rem .6rem;border-radius:12px;font-size:.75rem;font-weight:700;">Similar Match</div>` : ''}
+        ${hasMultipleStores && !isSynthetic ? `<div style="position:absolute;top:.6rem;right:.6rem;background:#3b82f6;color:white;padding:.2rem .6rem;border-radius:12px;font-size:.75rem;font-weight:700;">Available on ${storeCount} stores</div>` : ''}
+        <img class="product-thumb"
+             src="${item.thumbnail.startsWith('http') ? API_URL + '/api/image-proxy?url=' + encodeURIComponent(item.thumbnail) : item.thumbnail}"
+             onerror="this.src='https://placehold.co/120x120/f1f5f9/94a3b8?text=No+Image'"
+             alt="${item.title}" loading="lazy" />
+        <div class="product-card-body">
+          <span class="store-badge" style="--sc:${item.store.barColor};">${item.store.label}</span>
+          <div class="product-card-title">${item.title}</div>
+          <div class="product-card-price">${isSynthetic ? 'Check Site' : item.priceStr}</div>
+          ${item.delivery ? `<div class="product-card-delivery">${item.delivery}</div>` : ''}
+          ${item.rating ? `<div class="product-card-rating">⭐ ${item.rating}${item.reviews ? ` (${item.reviews})` : ''}</div>` : ''}
+          ${hasHistory ? `<div class="price-history-badge">📈 Price History Available</div>` : ''}
+          ${storeVariantsHtml}
+          <a class="view-deal-btn" href="${item.link}" target="_blank" rel="noopener noreferrer">${isSynthetic ? 'Search on ' + item.store.label + ' →' : 'View Deal →'}</a>
+        </div>
+      </div>`;
+  });
+
+  html += '</div>';
+  resultsList.innerHTML = html;
+
+  // Click card → compare page
+  resultsList.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('.view-deal-btn')) return;
+      showComparePage(currentResults[Number(card.dataset.index)]);
+    });
+  });
+
+  // Handle view deal button clicks
+  resultsList.querySelectorAll('.view-deal-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const link = btn.getAttribute('href');
+      const w = window.open(link, '_blank');
+      if (!w) {
+        alert('Popup blocked. Please allow popups for this site to view the deal.');
+      }
+    });
+  });
+}
+
+// ── Comparison bar chart (best per store) ──────────────────────────────────
+function renderChart() {
+  if (!graphCard || !priceChart || !storeLinks) {
+    console.warn('Chart elements not found in DOM');
+    return;
+  }
+  
+  const stores = Object.values(bestPerStore).sort((a, b) => a.price - b.price);
+  if (stores.length < 1) { graphCard.style.display = 'none'; return; }
+
+  const minP = stores[0].price;
+  const maxP = stores[stores.length - 1].price;
+  const scale = v => 30 + ((v - minP) / Math.max(1, maxP - minP)) * 60;
+
+  let chartHtml = `
+    <div style="margin-bottom:.6rem;font-size:.9rem;font-weight:700;color:#111827;">
+      Best price per store — lowest ${fmt(minP)}
+    </div>`;
+
+  stores.forEach(item => {
+    const w = Math.max(30, scale(item.price));
+    const isBest = item.price === minP;
+    chartHtml += `
+      <div class="chart-bar">
+        <div class="bar" style="width:${w}%;background:linear-gradient(90deg,${item.store.barColor},${item.store.barColor}bb);color:#fff;">
+          ${fmt(item.price)}
+        </div>
+        <span class="label">${item.store.label}${isBest ? ' ✓' : ''}</span>
+      </div>`;
+  });
+
+  priceChart.innerHTML = chartHtml;
+  graphCard.style.display = 'block';
+
+  // Store link buttons beneath chart
+  let linksHtml = '<span class="store-links-area-title">Go to store:</span>';
+  stores.forEach(item => {
+    linksHtml += `
+      <a class="store-link-btn ${item.store.cls}" href="${item.link}" target="_blank" rel="noopener noreferrer">
+        <img src="${item.store.logo}" alt="${item.store.label}" />
+        <span>${item.store.label} &mdash; ${fmt(item.price)}</span>
+      </a>`;
+  });
+  storeLinks.innerHTML = linksHtml;
+  storeLinks.style.display = 'flex';
+}
+
+// ── Price History Chart ────────────────────────────────────────────────────
+function renderPriceHistory(productData, selectedItem) {
+  const historyCard = document.getElementById('priceHistoryCard');
+  const svg = document.getElementById('historyChartSvg');
+  const insightDiv = document.getElementById('priceInsight');
+
+  if (!svg || !historyCard || !productData.priceHistory) {
+    if (historyCard) historyCard.style.display = 'none';
+    return;
+  }
+
+  const history = productData.priceHistory;
+  
+  // Collect all dates and stores
+  const allDates = new Set();
+  const storeKeys = Object.keys(history);
+  
+  storeKeys.forEach(store => {
+    if (history[store] && Array.isArray(history[store])) {
+      history[store].forEach(entry => {
+        allDates.add(entry.date);
+      });
+    }
+  });
+
+  const sortedDates = Array.from(allDates).sort();
+  if (sortedDates.length < 2) {
+    historyCard.style.display = 'none';
+    return;
+  }
+
+  // Chart dimensions
+  const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+  const width = svg.clientWidth - margin.left - margin.right;
+  const height = 320 - margin.top - margin.bottom;
+  
+  // Find min/max prices
+  let minPrice = Infinity, maxPrice = 0;
+  storeKeys.forEach(store => {
+    if (history[store]) {
+      history[store].forEach(entry => {
+        minPrice = Math.min(minPrice, entry.price);
+        maxPrice = Math.max(maxPrice, entry.price);
+      });
+    }
+  });
+  
+  const priceRange = maxPrice - minPrice || 1;
+  const padding = priceRange * 0.1;
+  const minY = minPrice - padding;
+  const maxY = maxPrice + padding;
+
+  // Scale functions
+  const xScale = (date) => {
+    const idx = sortedDates.indexOf(date);
+    return idx === -1 ? 0 : (idx / (sortedDates.length - 1 || 1)) * width;
+  };
+  const yScale = (price) => height - ((price - minY) / (maxY - minY)) * height;
+
+  // Clear SVG
+  svg.innerHTML = '';
+  
+  // Create group for chart
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('transform', `translate(${margin.left},${margin.top})`);
+
+  // Draw grid lines
+  const gridLinesY = 5;
+  for (let i = 0; i <= gridLinesY; i++) {
+    const y = (i / gridLinesY) * height;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', 0);
+    line.setAttribute('y1', y);
+    line.setAttribute('x2', width);
+    line.setAttribute('y2', y);
+    line.setAttribute('stroke', '#e2e8f0');
+    line.setAttribute('stroke-dasharray', '4');
+    line.setAttribute('stroke-width', '1');
+    g.appendChild(line);
+  }
+
+  // Define colors for each store
+  const storeColors = {
+    amazon: '#f97316',
+    flipkart: '#1d4ed8',
+    croma: '#0f766e',
+    reliance: '#dc2626',
+    tatacliq: '#7c3aed'
+  };
+
+  // Draw lines for each store
+  storeKeys.forEach(storeKey => {
+    if (!history[storeKey] || history[storeKey].length === 0) return;
+
+    const points = history[storeKey]
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .map(entry => ({
+        x: xScale(entry.date),
+        y: yScale(entry.price),
+        price: entry.price,
+        date: entry.date
+      }));
+
+    if (points.length < 2) return;
+
+    // Draw line
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    const pathData = points.map((p, i) => `${p.x},${p.y}`).join(' ');
+    path.setAttribute('points', pathData);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', storeColors[storeKey] || '#2563eb');
+    path.setAttribute('stroke-width', '2.5');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    g.appendChild(path);
+
+    // Draw circles for points
+    points.forEach((point, idx) => {
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', point.x);
+      circle.setAttribute('cy', point.y);
+      circle.setAttribute('r', '4');
+      circle.setAttribute('fill', storeColors[storeKey] || '#2563eb');
+      circle.setAttribute('stroke', '#fff');
+      circle.setAttribute('stroke-width', '2');
+      circle.setAttribute('class', 'history-point');
+      
+      // Add hover tooltip
+      circle.style.cursor = 'pointer';
+      circle.addEventListener('mouseover', () => {
+        circle.setAttribute('r', '6');
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', point.x);
+        label.setAttribute('y', point.y - 15);
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('font-size', '12');
+        label.setAttribute('fill', storeColors[storeKey] || '#2563eb');
+        label.setAttribute('font-weight', '600');
+        label.textContent = fmt(point.price);
+        label.setAttribute('class', 'history-label');
+        g.appendChild(label);
+      });
+      circle.addEventListener('mouseout', () => {
+        circle.setAttribute('r', '4');
+        const labels = g.querySelectorAll('.history-label');
+        labels.forEach(l => l.remove());
+      });
+      
+      g.appendChild(circle);
+    });
+  });
+
+  // Draw axes
+  const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  xAxis.setAttribute('x1', 0);
+  xAxis.setAttribute('y1', height);
+  xAxis.setAttribute('x2', width);
+  xAxis.setAttribute('y2', height);
+  xAxis.setAttribute('stroke', '#cbd5e1');
+  xAxis.setAttribute('stroke-width', '1.5');
+  g.appendChild(xAxis);
+
+  const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  yAxis.setAttribute('x1', 0);
+  yAxis.setAttribute('y1', 0);
+  yAxis.setAttribute('x2', 0);
+  yAxis.setAttribute('y2', height);
+  yAxis.setAttribute('stroke', '#cbd5e1');
+  yAxis.setAttribute('stroke-width', '1.5');
+  g.appendChild(yAxis);
+
+  // Add x-axis labels (dates)
+  sortedDates.forEach((date, idx) => {
+    if (idx % Math.ceil(sortedDates.length / 5) === 0 || idx === sortedDates.length - 1) {
+      const x = xScale(date);
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', x);
+      text.setAttribute('y', height + 20);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('font-size', '11');
+      text.setAttribute('fill', '#64748b');
+      text.textContent = date.substring(5);
+      g.appendChild(text);
+    }
+  });
+
+  // Add y-axis labels (prices)
+  for (let i = 0; i <= gridLinesY; i++) {
+    const price = minY + (i / gridLinesY) * (maxY - minY);
+    const y = yScale(price);
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', -5);
+    text.setAttribute('y', y + 4);
+    text.setAttribute('text-anchor', 'end');
+    text.setAttribute('font-size', '11');
+    text.setAttribute('fill', '#64748b');
+    text.textContent = fmt(Math.round(price));
+    g.appendChild(text);
+  }
+
+  // Add legend
+  let legendX = 10;
+  storeKeys.forEach(storeKey => {
+    if (!history[storeKey] || history[storeKey].length === 0) return;
+    
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', legendX);
+    rect.setAttribute('y', -15);
+    rect.setAttribute('width', '12');
+    rect.setAttribute('height', '12');
+    rect.setAttribute('fill', storeColors[storeKey] || '#2563eb');
+    rect.setAttribute('rx', '2');
+    g.appendChild(rect);
+
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', legendX + 16);
+    text.setAttribute('y', -3);
+    text.setAttribute('font-size', '12');
+    text.setAttribute('fill', '#64748b');
+    text.setAttribute('font-weight', '500');
+    const storeLabel = STORES.find(s => s.key === storeKey)?.label || storeKey;
+    text.textContent = storeLabel;
+    g.appendChild(text);
+
+    legendX += 130;
+  });
+
+  svg.appendChild(g);
+  historyCard.style.display = 'block';
+
+  // Generate insights
+  generatePriceInsight(history, storeKeys, sortedDates, insightDiv);
+}
+
+// ── Generate Price Insights ───────────────────────────────────────────────
+function generatePriceInsight(history, storeKeys, sortedDates, insightDiv) {
+  let insights = [];
+
+  // Find best and worst deals
+  storeKeys.forEach(store => {
+    if (history[store] && history[store].length > 0) {
+      const prices = history[store].map(e => e.price);
+      const minPrice = Math.min(...prices);
+      const maxPrice = Math.max(...prices);
+      const latestPrice = prices[prices.length - 1];
+      const startPrice = prices[0];
+      const priceChange = startPrice - latestPrice;
+      const percentChange = ((priceChange / startPrice) * 100).toFixed(1);
+
+      const storeLabel = STORES.find(s => s.key === store)?.label || store;
+      
+      if (priceChange > 0) {
+        insights.push(`✅ <strong>${storeLabel}</strong>: Price dropped by ${fmt(priceChange)} (${percentChange}%)`);
+      } else if (priceChange < 0) {
+        insights.push(`📈 <strong>${storeLabel}</strong>: Price increased by ${fmt(Math.abs(priceChange))} (${percentChange}%)`);
+      } else {
+        insights.push(`➡️ <strong>${storeLabel}</strong>: Price remained stable`);
+      }
+    }
+  });
+
+  // Overall best current deal
+  let bestStore = null;
+  let bestPrice = Infinity;
+  storeKeys.forEach(store => {
+    if (history[store] && history[store].length > 0) {
+      const latestPrice = history[store][history[store].length - 1].price;
+      if (latestPrice < bestPrice) {
+        bestPrice = latestPrice;
+        bestStore = store;
+      }
+    }
+  });
+
+  if (bestStore) {
+    const bestStoreLabel = STORES.find(s => s.key === bestStore)?.label || bestStore;
+    insights.unshift(`🏆 <strong>Best current deal:</strong> ${bestStoreLabel} at ${fmt(bestPrice)}`);
+  }
+
+  insightDiv.innerHTML = insights.join('<br>');
+}
+
+// ── Compare page ───────────────────────────────────────────────────────────
+function showComparePage(item) {
+  document.getElementById('searchPage').style.display = 'none';
+  document.getElementById('comparePage').style.display = 'block';
+
+  document.getElementById('compareTitle').textContent = item.title;
+  document.getElementById('compareSummary').textContent =
+    `Best price: ${item.priceStr} on ${item.store.label}`;
+
+  // ── Product details
+  const detBox = document.getElementById('productDetailsCompare');
+  detBox.innerHTML = `
+    <div style="display:flex;gap:1.2rem;align-items:flex-start;flex-wrap:wrap;">
+      <img src="${item.thumbnail}"
+           onerror="this.src='https://placehold.co/220x180/f1f5f9/94a3b8?text=No+Image';"
+           style="width:220px;height:180px;object-fit:contain;border-radius:14px;background:#f8fafc;padding:.5rem;" />
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;color:#111827;font-size:1rem;margin-bottom:.4rem;">${item.title}</div>
+        <div style="font-size:1.8rem;font-weight:900;color:#1d4ed8;margin-bottom:.4rem;">${item.priceStr}</div>
+        <span style="display:inline-block;padding:.2rem .7rem;border-radius:999px;font-size:.8rem;font-weight:700;
+                     border:1px solid ${item.store.barColor};color:${item.store.barColor};background:${item.store.barColor}15;">
+          ${item.store.label}
+        </span>
+        ${item.delivery ? `<div style="color:#475569;font-size:.85rem;margin-top:.5rem;">${item.delivery}</div>` : ''}
+        ${item.rating ? `<div style="color:#475569;font-size:.85rem;margin-top:.3rem;">⭐ ${item.rating}${item.reviews ? ` (${item.reviews} reviews)` : ''}</div>` : ''}
+      </div>
+    </div>`;
+
+  // ── Price chart on compare page
+  const stores = Object.values(bestPerStore).sort((a, b) => a.price - b.price);
+  const minP = stores[0]?.price ?? 0;
+  const maxP = stores[stores.length - 1]?.price ?? 1;
+  const scale = v => 30 + ((v - minP) / Math.max(1, maxP - minP)) * 60;
+
+  let cHtml = `
+    <div style="margin-bottom:.6rem;font-size:.9rem;font-weight:700;color:#111827;">
+      Best price from each store
+    </div>`;
+
+  stores.forEach(s => {
+    const w = Math.max(30, scale(s.price));
+    const isBest = s.price === minP;
+    cHtml += `
+      <div class="chart-bar">
+        <div class="bar" style="width:${w}%;background:linear-gradient(90deg,${s.store.barColor},${s.store.barColor}bb);color:#fff;">
+          ${fmt(s.price)}
+        </div>
+        <span class="label">${s.store.label}${isBest ? ' ✓ Best' : ''}</span>
+      </div>`;
+  });
+
+  document.getElementById('priceChartCompare').innerHTML = cHtml;
+
+  // Store link buttons on compare page
+  const slc = document.getElementById('storeLinksCompare');
+  let slcHtml = '<span class="store-links-area-title">View on store:</span>';
+  stores.forEach(s => {
+    slcHtml += `
+      <a class="store-link-btn ${s.store.cls}" href="${s.link}" target="_blank" rel="noopener noreferrer">
+        <img src="${s.store.logo}" alt="${s.store.label}" />
+        <span>${s.store.label} &mdash; ${fmt(s.price)}</span>
+      </a>`;
+  });
+  slc.innerHTML = slcHtml;
+  slc.style.display = 'flex';
+
+  // ── Price history chart
+  const productData = productDataMap[item.title];
+  if (productData) {
+    if (!productData.priceHistory) {
+      productData.priceHistory = generateSyntheticHistory(productData);
+    }
+    renderPriceHistory(productData, item);
+  } else {
+    const historyCard = document.getElementById('priceHistoryCard');
+    if (historyCard) historyCard.style.display = 'none';
+  }
+}
+
+// Back button with safety check
+const backButton = document.getElementById('backButton');
+if (backButton) {
+  backButton.addEventListener('click', () => {
+    const comparePage = document.getElementById('comparePage');
+    const searchPage = document.getElementById('searchPage');
+    if (comparePage) comparePage.style.display = 'none';
+    if (searchPage) searchPage.style.display = 'block';
+  });
+}
+
+// ── Event listeners ────────────────────────────────────────────────────────
+async function triggerSearch() {
+  const q = searchInput.value.trim();
+  if (!q) { showEmpty(); return; }
+
+  // Detect if input is a URL
+  try {
+    const urlObj = new URL(q);
+    if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+      showLoading('Parsing link to find product...');
+      
+      const extRes = await fetch(`${PROXY_URL}/extract?url=${encodeURIComponent(q)}`);
+      if (extRes.ok) {
+        const data = await extRes.json();
+        let title = data.title;
+        if (title) {
+          // Clean typical store suffixes from titles
+          title = title.split('|')[0]   // e.g. "Product | Amazon"
+                       .split(':')[0]   // e.g. "Product : Flipkart"
+                       .split('-')[0]   // e.g. "Product - Buy Online"
+                       .replace(/buy/i, '')
+                       .replace(/online/i, '')
+                       .trim();
+          
+          searchInput.value = title;
+          fetchPrices(title);
+          return;
+        }
+      }
+    }
+  } catch (e) {
+    // Not a valid URL, continue to normal search
+  }
+
+  fetchPrices(q);
+}
+
+// Event listeners with safety checks
+if (searchBtn) {
+  searchBtn.addEventListener('click', triggerSearch);
+}
+
+if (searchInput) {
+  searchInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') triggerSearch();
+  });
+}
+
+if (categoryFilter) {
+  categoryFilter.addEventListener('change', () => {
+    const q = searchInput.value.trim();
+    if (q) fetchPrices(q);
+  });
+}
+
+if (sortMode) {
+  sortMode.addEventListener('change', () => {
+    if (!currentResults.length) return;
+    renderCards(sortItems(currentResults, sortMode.value));
+  });
+}
+
+if (clearSearch) {
+  clearSearch.addEventListener('click', () => {
+    searchInput.value = '';
+    categoryFilter.value = 'all';
+    sortMode.value = 'none';
+    currentResults = [];
+    rawSerpResults = [];
+    bestPerStore = {};
+    showEmpty();
+  });
+}
+
+if (storeCheckboxes && storeCheckboxes.length > 0) {
+  storeCheckboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (rawSerpResults.length > 0) {
+        processAndRender(rawSerpResults);
+      }
+    });
+  });
+}
+
+// ── Bootstrap ──────────────────────────────────────────────────────────────
+function initializeApp() {
+  setTimeout(() => {
+    hideSplash();
+    showEmpty();
+  }, 1200);
+}
+
+// Ensure DOM is loaded before running
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  initializeApp();
+}
+
+// ── Extract by URL Logic ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const extractBtn = document.getElementById('extractBtn');
+  const linkInput = document.getElementById('linkInput');
+  const extractStatus = document.getElementById('extractStatus');
+
+  if (extractBtn && linkInput) {
+    extractBtn.addEventListener('click', async () => {
+      const url = linkInput.value.trim();
+      if (!url) {
+        extractStatus.textContent = 'Please paste a valid URL first.';
+        extractStatus.style.color = '#ef4444';
+        return;
+      }
+
+      if (!url.startsWith('http')) {
+        extractStatus.textContent = 'Invalid URL. Must start with http:// or https://';
+        extractStatus.style.color = '#ef4444';
+        return;
+      }
+
+      extractStatus.textContent = '⏳ Fetching product details...';
+      extractStatus.style.color = '#3b82f6';
+      extractBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_URL}/api/extract?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+
+        if (data.success && data.title) {
+          extractStatus.textContent = `✅ Found: ${data.title}. Searching...`;
+          extractStatus.style.color = '#10b981';
+          
+          // Trigger search with the extracted title
+          setTimeout(() => {
+            searchInput.value = data.title;
+            fetchPrices(data.title);
+            extractBtn.disabled = false;
+            linkInput.value = '';
+            extractStatus.textContent = '';
+          }, 1500);
+        } else {
+          throw new Error(data.error || 'Could not find product on this page');
+        }
+      } catch (err) {
+        extractStatus.textContent = `❌ Error: ${err.message}`;
+        extractStatus.style.color = '#ef4444';
+        extractBtn.disabled = false;
+      }
+    });
+  }
+});

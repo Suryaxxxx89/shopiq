@@ -2,364 +2,789 @@
   "mobiles": [
     {
       "brand": "Samsung Galaxy S24",
-      "amazon": 52999, "flipkart": 55999, "reliance": 70999, "croma": 70999,
+      "amazon": 52999,
+      "flipkart": 55999,
+      "reliance": 70999,
+      "croma": 70999,
       "amazonUrl": "https://www.amazon.in/Galaxy-S24-FE-Graphite-Processor/dp/B0F1YQDGL9/ref=sr_1_5?",
       "flipkartUrl": "https://www.flipkart.com/samsung-galaxy-s24-exynos-5g-onyx-black-256-gb/p/itm4e61988c77af8?",
       "relianceUrl": "https://www.reliancedigital.in/product/samsung-s24-5g-256-gb-8-gb-ram-onxy-black-mobile-phone-lrucdi-7536079?",
       "cromaUrl": "https://www.croma.com/samsung-galaxy-s24-5g-8gb-ram-256gb-onyx-black-/p/303849",
+      "priceHistory": {
+        "amazon": [
+          {
+            "date": "2026-02-15",
+            "price": 59999
+          },
+          {
+            "date": "2026-03-01",
+            "price": 57999
+          },
+          {
+            "date": "2026-03-15",
+            "price": 55999
+          },
+          {
+            "date": "2026-04-01",
+            "price": 54999
+          },
+          {
+            "date": "2026-04-15",
+            "price": 52999
+          }
+        ],
+        "flipkart": [
+          {
+            "date": "2026-02-15",
+            "price": 61999
+          },
+          {
+            "date": "2026-03-01",
+            "price": 59999
+          },
+          {
+            "date": "2026-03-15",
+            "price": 57999
+          },
+          {
+            "date": "2026-04-01",
+            "price": 56999
+          },
+          {
+            "date": "2026-04-15",
+            "price": 55999
+          }
+        ],
+        "reliance": [
+          {
+            "date": "2026-02-15",
+            "price": 72999
+          },
+          {
+            "date": "2026-03-15",
+            "price": 71999
+          },
+          {
+            "date": "2026-04-15",
+            "price": 70999
+          }
+        ],
+        "croma": [
+          {
+            "date": "2026-02-15",
+            "price": 72999
+          },
+          {
+            "date": "2026-03-15",
+            "price": 71999
+          },
+          {
+            "date": "2026-04-15",
+            "price": 70999
+          }
+        ],
+        "tatacliq": [
+          {
+            "date": "2026-02-15",
+            "price": 69799
+          },
+          {
+            "date": "2026-03-15",
+            "price": 67199
+          },
+          {
+            "date": "2026-04-15",
+            "price": 64599
+          }
+        ]
+      },
       "reviews": {
-        "amazon": ["Great battery life!", "Excellent camera quality.", "Fast performance."],
-        "flipkart": ["Value for money.", "Smooth display.", "Good after-sales support."],
-        "reliance": ["Easy to order.", "Helpful staff."],
-        "croma": ["Quick delivery.", "Wide range of products."]
+        "amazon": [
+          "Great battery life!",
+          "Excellent camera quality.",
+          "Fast performance."
+        ],
+        "flipkart": [
+          "Value for money.",
+          "Smooth display.",
+          "Good after-sales support."
+        ],
+        "reliance": [
+          "Easy to order.",
+          "Helpful staff."
+        ],
+        "croma": [
+          "Quick delivery.",
+          "Wide range of products."
+        ]
       },
       "specs": {
-        "image": "https://images.samsung.com/is/image/samsung/p6pim/ca/2401/gallery/ca-galaxy-s24-sm-s921wzkaxac-539292256?$650_519_PNG$",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24.jpg",
         "details": "Display: 6.2\" Dynamic AMOLED 2X • CPU: Exynos 2400 • RAM: 8GB • Storage: 256GB • Rear Camera: 50+12+10MP • Battery: 4000mAh • OS: Android 14"
-      }
+      },
+      "tatacliq": 64599,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Samsung%20Galaxy%20S24"
     },
     {
       "brand": "Samsung Galaxy S24 Ultra",
-      "amazon": 98999, "flipkart": 97999, "reliance": 99999, "croma": 98900,
+      "amazon": 98999,
+      "flipkart": 97999,
+      "reliance": 99999,
+      "croma": 98900,
       "amazonUrl": "https://www.amazon.in/s?k=Samsung+Galaxy+S24+Ultra",
       "flipkartUrl": "https://www.flipkart.com/search?q=Samsung+Galaxy+S24+Ultra",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Samsung%20Galaxy%20S24%20Ultra",
       "cromaUrl": "https://www.croma.com/searchB?q=Samsung%20Galaxy%20S24%20Ultra%3Arelevance&text=Samsung%20Galaxy%20S24%20Ultra",
+      "priceHistory": {
+        "amazon": [
+          {
+            "date": "2026-02-15",
+            "price": 108999
+          },
+          {
+            "date": "2026-03-01",
+            "price": 104999
+          },
+          {
+            "date": "2026-03-15",
+            "price": 101999
+          },
+          {
+            "date": "2026-04-01",
+            "price": 99999
+          },
+          {
+            "date": "2026-04-15",
+            "price": 98999
+          }
+        ],
+        "flipkart": [
+          {
+            "date": "2026-02-15",
+            "price": 107999
+          },
+          {
+            "date": "2026-03-01",
+            "price": 103999
+          },
+          {
+            "date": "2026-03-15",
+            "price": 100999
+          },
+          {
+            "date": "2026-04-01",
+            "price": 98999
+          },
+          {
+            "date": "2026-04-15",
+            "price": 97999
+          }
+        ],
+        "reliance": [
+          {
+            "date": "2026-02-15",
+            "price": 109999
+          },
+          {
+            "date": "2026-03-15",
+            "price": 104999
+          },
+          {
+            "date": "2026-04-15",
+            "price": 99999
+          }
+        ],
+        "croma": [
+          {
+            "date": "2026-02-15",
+            "price": 108999
+          },
+          {
+            "date": "2026-03-15",
+            "price": 103999
+          },
+          {
+            "date": "2026-04-15",
+            "price": 98900
+          }
+        ],
+        "tatacliq": [
+          {
+            "date": "2026-02-15",
+            "price": 108499
+          },
+          {
+            "date": "2026-03-15",
+            "price": 104499
+          },
+          {
+            "date": "2026-04-15",
+            "price": 100499
+          }
+        ]
+      },
       "specs": {
-        "image": "https://m.media-amazon.com/images/I/61QdM8alYFL._SL1500_.jpg",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-ultra5g.jpg",
         "details": "Display: 6.8\" QHD+ LTPO OLED • CPU: Snapdragon 8 Gen 3 • RAM: 12GB • Storage: 256GB • Rear Camera: 200+12+10+12MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 100499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Samsung%20Galaxy%20S24%20Ultra"
     },
     {
       "brand": "Samsung Galaxy A54",
-      "amazon": 27999, "flipkart": 26999, "reliance": 28999, "croma": 28000,
+      "amazon": 27999,
+      "flipkart": 26999,
+      "reliance": 28999,
+      "croma": 28000,
       "amazonUrl": "https://www.amazon.in/s?k=Samsung+Galaxy+A54",
       "flipkartUrl": "https://www.flipkart.com/apple-iphone-15-black-256-gb/p/itm6f0727e3e3b52?",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Samsung%20Galaxy%20A54",
       "cromaUrl": "https://www.croma.com/searchB?q=Samsung%20Galaxy%20A54%3Arelevance&text=Samsung%20Galaxy%20A54",
       "specs": {
-        "image": "https://m.media-amazon.com/images/I/71mC8rkluLL._SL1500_.jpg",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-a54.jpg",
         "details": "Display: 6.4\" Super AMOLED • CPU: Exynos 1380 • RAM: 8GB • Storage: 128GB • Rear Camera: 50+12+5MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 28799,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Samsung%20Galaxy%20A54"
     },
     {
       "brand": "Apple iPhone 15",
-      "amazon": 64900, "flipkart": 64900, "reliance": 69900, "croma": 62490,
+      "amazon": 64900,
+      "flipkart": 64900,
+      "reliance": 69900,
+      "croma": 62490,
       "amazonUrl": "https://www.amazon.in/Apple-iPhone-15-256-GB/dp/B0CHX6N27Y/ref=sr_1_3?",
       "flipkartUrl": "https://www.flipkart.com/apple-iphone-15-blue-256-gb/p/itmbf14ef54f645d?",
       "relianceUrl": "https://www.reliancedigital.in/product/apple-iphone-15-256gb-blue-lmiqma-7533795?",
       "cromaUrl": "https://www.croma.com/apple-iphone-15-256gb-blue-/p/300738",
+      "priceHistory": {
+        "amazon": [
+          {
+            "date": "2026-02-15",
+            "price": 74900
+          },
+          {
+            "date": "2026-03-01",
+            "price": 71900
+          },
+          {
+            "date": "2026-03-15",
+            "price": 68900
+          },
+          {
+            "date": "2026-04-01",
+            "price": 66900
+          },
+          {
+            "date": "2026-04-15",
+            "price": 64900
+          }
+        ],
+        "flipkart": [
+          {
+            "date": "2026-02-15",
+            "price": 74900
+          },
+          {
+            "date": "2026-03-01",
+            "price": 71900
+          },
+          {
+            "date": "2026-03-15",
+            "price": 68900
+          },
+          {
+            "date": "2026-04-01",
+            "price": 66900
+          },
+          {
+            "date": "2026-04-15",
+            "price": 64900
+          }
+        ],
+        "reliance": [
+          {
+            "date": "2026-02-15",
+            "price": 79900
+          },
+          {
+            "date": "2026-03-15",
+            "price": 74900
+          },
+          {
+            "date": "2026-04-15",
+            "price": 69900
+          }
+        ],
+        "croma": [
+          {
+            "date": "2026-02-15",
+            "price": 72490
+          },
+          {
+            "date": "2026-03-15",
+            "price": 67490
+          },
+          {
+            "date": "2026-04-15",
+            "price": 62490
+          }
+        ],
+        "tatacliq": [
+          {
+            "date": "2026-02-15",
+            "price": 72899
+          },
+          {
+            "date": "2026-03-15",
+            "price": 70199
+          },
+          {
+            "date": "2026-04-15",
+            "price": 67499
+          }
+        ]
+      },
       "specs": {
-        "image": "https://m.media-amazon.com/images/I/71d7rfSl0wL._SL1500_.jpg",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15.jpg",
         "details": "Display: 6.1\" Super Retina XDR • Chip: A16 Bionic • RAM: 8GB • Storage: 256GB • Rear Camera: 48+12MP • Battery: 3348mAh • iOS 17"
-      }
+      },
+      "tatacliq": 67499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Apple%20iPhone%2015"
     },
     {
       "brand": "Apple iPhone 14",
-      "amazon": 69900, "flipkart": 68900, "reliance": 70999, "croma": 70500,
+      "amazon": 69900,
+      "flipkart": 68900,
+      "reliance": 70999,
+      "croma": 70500,
       "amazonUrl": "https://www.amazon.in/s?k=iPhone+14",
       "flipkartUrl": "https://www.flipkart.com/search?q=iPhone+14",
       "relianceUrl": "https://www.reliancedigital.in/products?q=iPhone%2014",
       "cromaUrl": "https://www.croma.com/searchB?q=iPhone%2014%3Arelevance&text=iPhone%2014",
       "specs": {
-        "image": "https://m.media-amazon.com/images/I/61ZNCN6dV4L._SL1500_.jpg",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-14.jpg",
         "details": "Display: 6.1\" Super Retina XDR • Chip: A15 Bionic • RAM: 6GB • Storage: 128GB • Rear Camera: 12+12MP • Battery: 3279mAh"
-      }
+      },
+      "tatacliq": 71499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Apple%20iPhone%2014"
     },
     {
       "brand": "Apple iPhone 13",
-      "amazon": 55999, "flipkart": 54999, "reliance": 56999, "croma": 56000,
+      "amazon": 55999,
+      "flipkart": 54999,
+      "reliance": 56999,
+      "croma": 56000,
       "amazonUrl": "https://www.amazon.in/s?k=iPhone+13",
       "flipkartUrl": "https://www.flipkart.com/search?q=iPhone+13",
       "relianceUrl": "https://www.reliancedigital.in/products?q=iPhone%2013",
       "cromaUrl": "https://www.croma.com/searchB?q=iPhone%2013%3Arelevance&text=iPhone%2013",
       "specs": {
-        "image": "https://m.media-amazon.com/images/I/71Eja8n8r4L._SL1500_.jpg",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-13.jpg",
         "details": "Display: 6.1\" Super Retina XDR • Chip: A15 Bionic • RAM: 4GB • Storage: 128GB • Rear Camera: 12+12MP • Battery: 3240mAh"
-      }
+      },
+      "tatacliq": 57499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Apple%20iPhone%2013"
     },
     {
       "brand": "OnePlus 12",
-      "amazon": 61999, "flipkart": 60999, "reliance": 62999, "croma": 61500,
+      "amazon": 61999,
+      "flipkart": 60999,
+      "reliance": 62999,
+      "croma": 61500,
       "amazonUrl": "https://www.amazon.in/s?k=OnePlus+12",
       "flipkartUrl": "https://www.flipkart.com/search?q=OnePlus+12",
       "relianceUrl": "https://www.reliancedigital.in/products?q=OnePlus%2012",
       "cromaUrl": "https://www.croma.com/searchB?q=OnePlus%2012%3Arelevance&text=OnePlus%2012",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/1/8/z/-original-imagnd6vypggxw5y.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/oneplus-12.jpg",
         "details": "Display: 6.82\" Fluid AMOLED 120Hz • CPU: Snapdragon 8 Gen 3 • RAM: 12GB • Storage: 256GB • Rear Camera: 50+48+64MP • Battery: 5400mAh"
-      }
+      },
+      "tatacliq": 63499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=OnePlus%2012"
     },
     {
       "brand": "OnePlus 11",
-      "amazon": 45999, "flipkart": 44999, "reliance": 46999, "croma": 45800,
+      "amazon": 45999,
+      "flipkart": 44999,
+      "reliance": 46999,
+      "croma": 45800,
       "amazonUrl": "https://www.amazon.in/s?k=OnePlus+11",
       "flipkartUrl": "https://www.flipkart.com/search?q=OnePlus+11",
       "relianceUrl": "https://www.reliancedigital.in/products?q=OnePlus%2011",
       "cromaUrl": "https://www.croma.com/searchB?q=OnePlus%20Nord%203%3Arelevance&text=OnePlus%20Nord%203",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/8/3/s/-original-imagz9t2dnkcm9zk.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/oneplus-11.jpg",
         "details": "Display: 6.7\" AMOLED 120Hz • CPU: Snapdragon 8 Gen 2 • RAM: 8GB • Storage: 128GB • Rear Camera: 50+48+32MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 47299,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=OnePlus%2011"
     },
     {
       "brand": "OnePlus Nord 3",
-      "amazon": 29999, "flipkart": 28999, "reliance": 30999, "croma": 30000,
+      "amazon": 29999,
+      "flipkart": 28999,
+      "reliance": 30999,
+      "croma": 30000,
       "amazonUrl": "https://www.amazon.in/s?k=OnePlus+Nord+3",
       "flipkartUrl": "https://www.flipkart.com/search?q=OnePlus+Nord+3",
       "relianceUrl": "https://www.reliancedigital.in/products?q=OnePlus%20Nord%203",
       "cromaUrl": "https://www.croma.com/searchB?q=OnePlus%20Nord%203%3Arelevance&text=OnePlus%20Nord%203",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/d/w/e/-original-imaght3xadj4amp9.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/oneplus-nord-3.jpg",
         "details": "Display: 6.74\" Fluid AMOLED 120Hz • CPU: MediaTek Dimensity 9000 • RAM: 8GB • Storage: 128GB • Rear Camera: 50+8+2MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 30899,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=OnePlus%20Nord%203"
     },
     {
       "brand": "Xiaomi 14 Pro",
-      "amazon": 54999, "flipkart": 53999, "reliance": 55599, "croma": 54800,
+      "amazon": 54999,
+      "flipkart": 53999,
+      "reliance": 55599,
+      "croma": 54800,
       "amazonUrl": "https://www.amazon.in/s?k=Xiaomi+14+Pro",
       "flipkartUrl": "https://www.flipkart.com/search?q=Xiaomi+14+Pro",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Xiaomi%2014%20Pro",
       "cromaUrl": "https://www.croma.com/searchB?q=Xiaomi%2014%20Pro%3Arelevance&text=Xiaomi%2014%20Pro",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/j/k/u/-original-imagz7dn7fsduqy9.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14-pro.jpg",
         "details": "Display: 6.73\" OLED 120Hz • CPU: Snapdragon 8 Gen 3 • RAM: 12GB • Storage: 256GB • Rear Camera: 50+50+50MP • Battery: 4820mAh"
-      }
+      },
+      "tatacliq": 56099,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Xiaomi%2014%20Pro"
     },
     {
       "brand": "Xiaomi Redmi Note 13 Pro",
-      "amazon": 23999, "flipkart": 22999, "reliance": 24999, "croma": 24200,
+      "amazon": 23999,
+      "flipkart": 22999,
+      "reliance": 24999,
+      "croma": 24200,
       "amazonUrl": "https://www.amazon.in/s?k=Redmi+Note+13+Pro",
       "flipkartUrl": "https://www.flipkart.com/search?q=Redmi+Note+13+Pro",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Redmi%20Note%2013%20Pro",
       "cromaUrl": "https://www.croma.com/searchB?q=Redmi%20Note%2013%20Pro%3Arelevance&text=Redmi%20Note%2013%20Pro",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/j/k/u/-original-imagz7dn7fsduqy9.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/xiaomi-redmi-note-13-pro.jpg",
         "details": "Display: 6.67\" AMOLED 120Hz • CPU: Snapdragon 7s Gen 2 • RAM: 8GB • Storage: 256GB • Rear Camera: 200+8+2MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 24799,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Xiaomi%20Redmi%20Note%2013%20Pro"
     },
     {
       "brand": "Xiaomi 13T",
-      "amazon": 42999, "flipkart": 41999, "reliance": 43999, "croma": 43000,
+      "amazon": 42999,
+      "flipkart": 41999,
+      "reliance": 43999,
+      "croma": 43000,
       "amazonUrl": "https://www.amazon.in/s?k=Xiaomi+13T",
       "flipkartUrl": "https://www.flipkart.com/search?q=Xiaomi+13T",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Xiaomi%2013T",
       "cromaUrl": "https://www.croma.com/searchB?q=Xiaomi%2013T%3Arelevance&text=Xiaomi%2013T",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/p/k/9/-original-imagk6v6ywnhj8uj.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/xiaomi-13t.jpg",
         "details": "Display: 6.67\" AMOLED 120Hz • CPU: Dimensity 8200-Ultra • RAM: 8GB • Storage: 256GB • Rear Camera: 50+8+2MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 44299,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Xiaomi%2013T"
     },
     {
       "brand": "realme 12 Pro+",
-      "amazon": 29999, "flipkart": 28999, "reliance": 30899, "croma": 30200,
+      "amazon": 29999,
+      "flipkart": 28999,
+      "reliance": 30899,
+      "croma": 30200,
       "amazonUrl": "https://www.amazon.in/s?k=realme+12+Pro%2B",
       "flipkartUrl": "https://www.flipkart.com/search?q=realme+12+Pro%2B",
       "relianceUrl": "https://www.reliancedigital.in/products?q=realme%2012%20Pro%2B",
       "cromaUrl": "https://www.croma.com/searchB?q=realme%2012%20Pro%2B%3Arelevance&text=realme%2012%20Pro%2B",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/o/0/f/-original-imagx7f7hjqhbxdy.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/realme-12-pro-plus.jpg",
         "details": "Display: 6.7\" Super AMOLED 120Hz • CPU: Dimensity 7050 • RAM: 8GB • Storage: 256GB • Rear Camera: 200+8+2MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 30899,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=realme%2012%20Pro%2B"
     },
     {
       "brand": "realme Narzo 70",
-      "amazon": 17999, "flipkart": 16999, "reliance": 18999, "croma": 18000,
+      "amazon": 17999,
+      "flipkart": 16999,
+      "reliance": 18999,
+      "croma": 18000,
       "amazonUrl": "https://www.amazon.in/s?k=realme+Narzo+70",
       "flipkartUrl": "https://www.flipkart.com/search?q=realme+Narzo+70",
       "relianceUrl": "https://www.reliancedigital.in/products?q=realme%20Narzo%2070",
       "cromaUrl": "https://www.croma.com/searchB?q=realme%20Narzo%2070%3Arelevance&text=realme%20Narzo%2070",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/h/0/x/-original-imagngh9yqxabwzc.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/realme-narzo-70.jpg",
         "details": "Display: 6.72\" IPS 120Hz • CPU: Helio G99 • RAM: 8GB • Storage: 128GB • Rear Camera: 108+2+2MP • Battery: 6000mAh"
-      }
+      },
+      "tatacliq": 18499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=realme%20Narzo%2070"
     },
     {
       "brand": "realme 11 Pro",
-      "amazon": 24999, "flipkart": 23999, "reliance": 25999, "croma": 25200,
+      "amazon": 24999,
+      "flipkart": 23999,
+      "reliance": 25999,
+      "croma": 25200,
       "amazonUrl": "https://www.amazon.in/s?k=realme+11+Pro",
       "flipkartUrl": "https://www.flipkart.com/search?q=realme+11+Pro",
       "relianceUrl": "https://www.reliancedigital.in/products?q=realme%2011%20Pro",
       "cromaUrl": "https://www.croma.com/searchB?q=realme%2011%20Pro%3Arelevance&text=realme%2011%20Pro",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/m/x/z/-original-imaghzsdvz9hzykg.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/realme-11-pro.jpg",
         "details": "Display: 6.7\" Super AMOLED 120Hz • CPU: Helio G99 • RAM: 8GB • Storage: 256GB • Rear Camera: 108+8+2MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 25799,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=realme%2011%20Pro"
     },
     {
       "brand": "Vivo X100",
-      "amazon": 52999, "flipkart": 51999, "reliance": 53099, "croma": 52500,
+      "amazon": 52999,
+      "flipkart": 51999,
+      "reliance": 53099,
+      "croma": 52500,
       "amazonUrl": "https://www.amazon.in/s?k=Vivo+X100",
       "flipkartUrl": "https://www.flipkart.com/search?q=Vivo+X100",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Vivo%20X100",
       "cromaUrl": "https://www.croma.com/searchB?q=Vivo%20X100%3Arelevance&text=Vivo%20X100",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/c/6/0/-original-imagkv4w55654hzs.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/vivo-x100.jpg",
         "details": "Display: 6.78\" AMOLED 120Hz • CPU: Snapdragon 8 Gen 3 • RAM: 12GB • Storage: 256GB • Rear Camera: 50+50+64MP • Battery: 5600mAh"
-      }
+      },
+      "tatacliq": 53599,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Vivo%20X100"
     },
     {
       "brand": "Vivo V30",
-      "amazon": 41999, "flipkart": 40999, "reliance": 42999, "croma": 42200,
+      "amazon": 41999,
+      "flipkart": 40999,
+      "reliance": 42999,
+      "croma": 42200,
       "amazonUrl": "https://www.amazon.in/s?k=Vivo+V30",
       "flipkartUrl": "https://www.flipkart.com/search?q=Vivo+V30",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Vivo%20V30",
       "cromaUrl": "https://www.croma.com/searchB?q=Vivo%20V30%3Arelevance&text=Vivo%20V30",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/d/z/0/-original-imagkhg6qzxky4zs.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/vivo-v30.jpg",
         "details": "Display: 6.78\" AMOLED 120Hz • CPU: Snapdragon 7 Gen 3 • RAM: 8GB • Storage: 256GB • Rear Camera: 64+50+8MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 43299,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Vivo%20V30"
     },
     {
       "brand": "Vivo Y200",
-      "amazon": 21999, "flipkart": 20999, "reliance": 22999, "croma": 22200,
+      "amazon": 21999,
+      "flipkart": 20999,
+      "reliance": 22999,
+      "croma": 22200,
       "amazonUrl": "https://www.amazon.in/s?k=Vivo+Y200",
       "flipkartUrl": "https://www.flipkart.com/search?q=Vivo+Y200",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Vivo%20Y200",
       "cromaUrl": "https://www.croma.com/searchB?q=Vivo%20Y200%3Arelevance&text=Vivo%20Y200",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/e/k/m/-original-imagk7zpzgbq9v7v.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/vivo-y200.jpg",
         "details": "Display: 6.72\" AMOLED 120Hz • CPU: Dimensity 7050 • RAM: 8GB • Storage: 128GB • Rear Camera: 64+8+2MP • Battery: 6000mAh"
-      }
+      },
+      "tatacliq": 22699,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Vivo%20Y200"
     },
     {
       "brand": "OPPO Reno 12",
-      "amazon": 36999, "flipkart": 36199, "reliance": 37999, "croma": 37000,
+      "amazon": 36999,
+      "flipkart": 36199,
+      "reliance": 37999,
+      "croma": 37000,
       "amazonUrl": "https://www.amazon.in/s?k=OPPO+Reno+12",
       "flipkartUrl": "https://www.flipkart.com/search?q=OPPO+Reno+12",
       "relianceUrl": "https://www.reliancedigital.in/products?q=OPPO%20Reno%2012",
       "cromaUrl": "https://www.croma.com/searchB?q=OPPO%20Reno%2012%3Arelevance&text=OPPO%20Reno%2012",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/3/8/0/-original-imagz8h4rax3uv9h.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/oppo-reno12.jpg",
         "details": "Display: 6.7\" AMOLED 120Hz • CPU: Snapdragon 7 Gen 3 • RAM: 8GB • Storage: 256GB • Rear Camera: 50+8+2MP • Battery: 5500mAh"
-      }
+      },
+      "tatacliq": 38199,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=OPPO%20Reno%2012"
     },
     {
       "brand": "OPPO F21 Pro",
-      "amazon": 22999, "flipkart": 21999, "reliance": 23999, "croma": 23200,
+      "amazon": 22999,
+      "flipkart": 21999,
+      "reliance": 23999,
+      "croma": 23200,
       "amazonUrl": "https://www.amazon.in/s?k=OPPO+F21+Pro",
       "flipkartUrl": "https://www.flipkart.com/search?q=OPPO+F21+Pro",
       "relianceUrl": "https://www.reliancedigital.in/products?q=OPPO%20F21%20Pro",
       "cromaUrl": "https://www.croma.com/searchB?q=OPPO%20F21%20Pro%3Arelevance&text=OPPO%20F21%20Pro",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/x/5/k/-original-imagkxyz3hgt5c7c.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/oppo-f21-pro.jpg",
         "details": "Display: 6.43\" AMOLED 90Hz • CPU: Snapdragon 680 • RAM: 8GB • Storage: 128GB • Rear Camera: 64+2+2MP • Battery: 4500mAh"
-      }
+      },
+      "tatacliq": 23699,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=OPPO%20F21%20Pro"
     },
     {
       "brand": "OPPO A78",
-      "amazon": 16999, "flipkart": 15999, "reliance": 17999, "croma": 17200,
+      "amazon": 16999,
+      "flipkart": 15999,
+      "reliance": 17999,
+      "croma": 17200,
       "amazonUrl": "https://www.amazon.in/s?k=OPPO+A78",
       "flipkartUrl": "https://www.flipkart.com/search?q=OPPO+A78",
       "relianceUrl": "https://www.reliancedigital.in/products?q=OPPO%20A78",
       "cromaUrl": "https://www.croma.com/searchB?q=OPPO%20A78%3Arelevance&text=OPPO%20A78",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/g/3/n/-original-imagk7k6c7f46h9f.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/oppo-a78.jpg",
         "details": "Display: 6.56\" AMOLED 90Hz • CPU: Snapdragon 695 • RAM: 8GB • Storage: 128GB • Rear Camera: 64+2+2MP • Battery: 5000mAh"
-      }
+      },
+      "tatacliq": 17599,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=OPPO%20A78"
     },
     {
       "brand": "Google Pixel 8",
-      "amazon": 64999, "flipkart": 63899, "reliance": 66999, "croma": 65800,
+      "amazon": 64999,
+      "flipkart": 63899,
+      "reliance": 66999,
+      "croma": 65800,
       "amazonUrl": "https://www.amazon.in/s?k=Google+Pixel+8",
       "flipkartUrl": "https://www.flipkart.com/search?q=Google+Pixel+8",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Google%20Pixel%208",
       "cromaUrl": "https://www.croma.com/searchB?q=Google%20Pixel%208%3Arelevance&text=Google%20Pixel%208",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/0/2/g/-original-imagp9udkzv4bqzk.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/google-pixel-8.jpg",
         "details": "Display: 6.2\" OLED 120Hz • CPU: Tensor G3 • RAM: 8GB • Storage: 128GB • Rear Camera: 50+12MP • Battery: 4575mAh"
-      }
+      },
+      "tatacliq": 67399,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Google%20Pixel%208"
     },
     {
       "brand": "Google Pixel 7a",
-      "amazon": 39999, "flipkart": 38999, "reliance": 41999, "croma": 41000,
+      "amazon": 39999,
+      "flipkart": 38999,
+      "reliance": 41999,
+      "croma": 41000,
       "amazonUrl": "https://www.amazon.in/s?k=Google+Pixel+7a",
       "flipkartUrl": "https://www.flipkart.com/search?q=Google+Pixel+7a",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Google%20Pixel%207a",
       "cromaUrl": "https://www.croma.com/searchB?q=Google%20Pixel%207a%3Arelevance&text=Google%20Pixel%207a",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/p/y/z/-original-imagkpkz8myfhagv.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/google-pixel-7a.jpg",
         "details": "Display: 6.1\" OLED 90Hz • CPU: Tensor G2 • RAM: 8GB • Storage: 128GB • Rear Camera: 64+13MP • Battery: 4385mAh"
-      }
+      },
+      "tatacliq": 41699,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Google%20Pixel%207a"
     },
     {
       "brand": "Google Pixel 7",
-      "amazon": 49999, "flipkart": 48999, "reliance": 51999, "croma": 51000,
+      "amazon": 49999,
+      "flipkart": 48999,
+      "reliance": 51999,
+      "croma": 51000,
       "amazonUrl": "https://www.amazon.in/s?k=Google+Pixel+7",
       "flipkartUrl": "https://www.flipkart.com/search?q=Google+Pixel+7",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Google%20Pixel%207",
       "cromaUrl": "https://www.croma.com/searchB?q=Google%20Pixel%207%3Arelevance&text=Google%20Pixel%207",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/i/f/y/-original-imagj5p6yckwvxpw.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/google-pixel-7.jpg",
         "details": "Display: 6.3\" AMOLED 90Hz • CPU: Tensor G2 • RAM: 8GB • Storage: 128GB • Rear Camera: 50+12MP • Battery: 4306mAh"
-      }
+      },
+      "tatacliq": 51999,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Google%20Pixel%207"
     },
     {
       "brand": "Motorola Edge 40",
-      "amazon": 24999, "flipkart": 23999, "reliance": 25999, "croma": 25200,
+      "amazon": 24999,
+      "flipkart": 23999,
+      "reliance": 25999,
+      "croma": 25200,
       "amazonUrl": "https://www.amazon.in/s?k=Motorola+Edge+40",
       "flipkartUrl": "https://www.flipkart.com/search?q=Motorola+Edge+40",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Motorola%20Edge%2040",
       "cromaUrl": "https://www.croma.com/searchB?q=Motorola%20Edge%2040%3Arelevance&text=Motorola%20Edge%2040",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/q/5/d/-original-imaghf4ztjnqgfkq.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/motorola-edge-40.jpg",
         "details": "Display: 6.55\" pOLED 144Hz • CPU: Dimensity 8020 • RAM: 8GB • Storage: 256GB • Rear Camera: 50+13MP • Battery: 4400mAh"
-      }
+      },
+      "tatacliq": 25799,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Motorola%20Edge%2040"
     },
     {
       "brand": "iQOO Neo 9 Pro",
-      "amazon": 36999, "flipkart": 35999, "reliance": 37999, "croma": 37200,
+      "amazon": 36999,
+      "flipkart": 35999,
+      "reliance": 37999,
+      "croma": 37200,
       "amazonUrl": "https://www.amazon.in/s?k=iQOO+Neo+9+Pro",
       "flipkartUrl": "https://www.flipkart.com/search?q=iQOO+Neo+9+Pro",
       "relianceUrl": "https://www.reliancedigital.in/products?q=iQOO%20Neo%209%20Pro",
       "cromaUrl": "https://www.croma.com/searchB?q=iQOO%20Neo%209%20Pro%3Arelevance&text=iQOO%20Neo%209%20Pro",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/xif0q/mobile/5/g/a/-original-imagrc6mpg6zfz4n.jpeg?q=70",
+        "image": "https://fdn2.gsmarena.com/vv/bigpic/vivo-iqoo-neo-9-pro.jpg",
         "details": "Display: 6.78\" AMOLED 144Hz • CPU: Snapdragon 8 Gen 2 • RAM: 12GB • Storage: 256GB • Rear Camera: 50+8+2MP • Battery: 5160mAh"
-      }
+      },
+      "tatacliq": 38199,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=iQOO%20Neo%209%20Pro"
     }
   ],
   "laptops": [
     {
       "brand": "Dell Inspiron 15",
-      "amazon": 53180, "flipkart": 53180, "reliance": 53999, "croma": 52900,
+      "amazon": 53180,
+      "flipkart": 53180,
+      "reliance": 53999,
+      "croma": 52900,
       "amazonUrl": "https://www.amazon.in/s?k=Dell+Inspiron+15",
       "flipkartUrl": "https://www.flipkart.com/search?q=Dell+Inspiron+15",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Dell%20Inspiron%2015",
       "cromaUrl": "https://www.croma.com/searchB?q=Dell%20Inspiron%2015%3Arelevance&text=Dell%20Inspiron%2015",
       "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Dell%20Inspiron%2015",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/l4x2rgw0/computer/q/l/v/dell-inspiron-3511-nd-3511-laptop-original-imagf2e3gt3vvydv.jpeg?q=70",
+        "image": "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/inspiron-notebooks/15-3520/media-gallery/black/notebook-inspiron-15-3520-black-gallery-4.psd",
         "details": "CPU: Intel i5-1235U • RAM: 8GB DDR4 • Storage: 512GB SSD • Display: 15.6\" FHD • GPU: Intel Iris Xe • OS: Windows 11"
-      }
+      },
+      "tatacliq": 54499
     },
     {
       "brand": "Dell Vostro 14",
-      "amazon": 57999, "flipkart": 56999, "reliance": 58999, "croma": 58000,
+      "amazon": 57999,
+      "flipkart": 56999,
+      "reliance": 58999,
+      "croma": 58000,
       "amazonUrl": "https://www.amazon.in/s?k=Dell+Vostro+14",
       "flipkartUrl": "https://www.flipkart.com/search?q=Dell+Vostro+14",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Dell%20Vostro%2014",
       "cromaUrl": "https://www.croma.com/searchB?q=Dell%20Vostro%2014%3Arelevance&text=Dell%20Vostro%2014",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/l4w7gm80/computer/v/o/e/dell-vostro-3420-notebook-original-imagfe4rhrp3z7yc.jpeg?q=70",
+        "image": "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/vostro-notebooks/14-3420/media-gallery/black/notebook-vostro-14-3420-black-gallery-4.psd",
         "details": "CPU: Intel i5-1235U • RAM: 8GB • Storage: 512GB SSD • Display: 14\" FHD • GPU: Intel Iris Xe"
-      }
+      },
+      "tatacliq": 59499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Dell%20Vostro%2014"
     },
     {
       "brand": "Dell XPS 13",
-      "amazon": 114999, "flipkart": 112999, "reliance": 116999, "croma": 115500,
+      "amazon": 114999,
+      "flipkart": 112999,
+      "reliance": 116999,
+      "croma": 115500,
       "amazonUrl": "https://www.amazon.in/s?k=Dell+XPS+13",
       "flipkartUrl": "https://www.flipkart.com/search?q=Dell+XPS+13",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Dell%20XPS%2013",
       "cromaUrl": "https://www.croma.com/searchB?q=Dell%20XPS%2013%3Arelevance&text=Dell%20XPS%2013",
       "specs": {
-        "image": "https://rukminim1.flixcart.com/image/312/312/l4i0fjk0/computer/w/a/p/dell-xps-9315-laptop-original-imagfvkfgzcpvfgg.jpeg?q=70",
+        "image": "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/xps-notebooks/xps-13-9315/media-gallery/black/notebook-xps-9315-black-gallery-4.psd",
         "details": "CPU: Intel i7-1360P • RAM: 16GB • Storage: 512GB SSD • Display: 13.4\" FHD+ • GPU: Intel Iris Xe"
-      }
+      },
+      "tatacliq": 117499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Dell%20XPS%2013"
     },
     {
       "brand": "HP Pavilion 14",
-      "amazon": 62999, "flipkart": 61999, "reliance": 63999, "croma": 62800,
+      "amazon": 62999,
+      "flipkart": 61999,
+      "reliance": 63999,
+      "croma": 62800,
       "amazonUrl": "https://www.amazon.in/s?k=HP+Pavilion+14",
       "flipkartUrl": "https://www.flipkart.com/search?q=HP+Pavilion+14",
       "relianceUrl": "https://www.reliancedigital.in/products?q=HP%20Pavilion%2014",
@@ -367,11 +792,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/w/9/g/hp-14s-fq5116tu-thin-light-laptop-original-imagf3hwqzxkbxje.jpeg?q=70",
         "details": "CPU: Intel i5-1235U • RAM: 8GB • Storage: 512GB SSD • Display: 14\" FHD • GPU: Intel Iris Xe"
-      }
+      },
+      "tatacliq": 64499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=HP%20Pavilion%2014"
     },
     {
       "brand": "HP Envy x360",
-      "amazon": 84999, "flipkart": 83999, "reliance": 86999, "croma": 85900,
+      "amazon": 84999,
+      "flipkart": 83999,
+      "reliance": 86999,
+      "croma": 85900,
       "amazonUrl": "https://www.amazon.in/s?k=HP+Envy+x360",
       "flipkartUrl": "https://www.flipkart.com/search?q=HP+Envy+x360",
       "relianceUrl": "https://www.reliancedigital.in/products?q=HP%20Envy%20x360",
@@ -379,11 +809,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/w/b/x/hp-envy-x360-chromebook-original-imagf3hwfd8xzsz7.jpeg?q=70",
         "details": "CPU: AMD Ryzen 5 5625U • RAM: 8GB • Storage: 512GB SSD • Display: 14\" FHD Touch • GPU: Radeon Graphics"
-      }
+      },
+      "tatacliq": 87499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=HP%20Envy%20x360"
     },
     {
       "brand": "HP Omen 16",
-      "amazon": 104999, "flipkart": 102999, "reliance": 107999, "croma": 105500,
+      "amazon": 104999,
+      "flipkart": 102999,
+      "reliance": 107999,
+      "croma": 105500,
       "amazonUrl": "https://www.amazon.in/s?k=HP+Omen+16",
       "flipkartUrl": "https://www.flipkart.com/search?q=HP+Omen+16",
       "relianceUrl": "https://www.reliancedigital.in/products?q=HP%20Omen%2016",
@@ -391,11 +826,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4ho5zk0/computer/n/x/r/hp-omen-16-cm0004ax-gaming-laptop-original-imagf2g2sv2xjmht.jpeg?q=70",
         "details": "CPU: Intel i7-12700H • RAM: 16GB • Storage: 1TB SSD • Display: 16.1\" QHD 165Hz • GPU: RTX 4060"
-      }
+      },
+      "tatacliq": 108499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=HP%20Omen%2016"
     },
     {
       "brand": "Lenovo IdeaPad 5",
-      "amazon": 54999, "flipkart": 53999, "reliance": 55999, "croma": 54800,
+      "amazon": 54999,
+      "flipkart": 53999,
+      "reliance": 55999,
+      "croma": 54800,
       "amazonUrl": "https://www.amazon.in/s?k=Lenovo+IdeaPad+5",
       "flipkartUrl": "https://www.flipkart.com/search?q=Lenovo+IdeaPad+5",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Lenovo%20IdeaPad%205",
@@ -403,11 +843,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/7/w/h/lenovo-ideapad-5-82la00p3in-thin-light-laptop-original-imagf3hw4axmhkdh.jpeg?q=70",
         "details": "CPU: AMD Ryzen 5 5500U • RAM: 8GB • Storage: 512GB SSD • Display: 14\" FHD • GPU: Radeon Graphics"
-      }
+      },
+      "tatacliq": 56499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Lenovo%20IdeaPad%205"
     },
     {
       "brand": "Lenovo Legion 5",
-      "amazon": 99999, "flipkart": 97999, "reliance": 104999, "croma": 101500,
+      "amazon": 99999,
+      "flipkart": 97999,
+      "reliance": 104999,
+      "croma": 101500,
       "amazonUrl": "https://www.amazon.in/s?k=Lenovo+Legion+5",
       "flipkartUrl": "https://www.flipkart.com/search?q=Lenovo+Legion+5",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Lenovo%20Legion%205",
@@ -415,11 +860,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l2v2vww0/computer/g/w/g/lenovo-legion-5-82jx00rrin-gaming-laptop-original-imagn95az5fg4vxe.jpeg?q=70",
         "details": "CPU: AMD Ryzen 7 6800H • RAM: 16GB • Storage: 512GB SSD • Display: 15.6\" FHD 165Hz • GPU: RTX 3060"
-      }
+      },
+      "tatacliq": 104199,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Lenovo%20Legion%205"
     },
     {
       "brand": "Lenovo ThinkPad E14",
-      "amazon": 64999, "flipkart": 63999, "reliance": 66999, "croma": 65900,
+      "amazon": 64999,
+      "flipkart": 63999,
+      "reliance": 66999,
+      "croma": 65900,
       "amazonUrl": "https://www.amazon.in/s?k=Lenovo+ThinkPad+E14",
       "flipkartUrl": "https://www.flipkart.com/search?q=Lenovo+ThinkPad+E14",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Lenovo%20ThinkPad%20E14",
@@ -427,11 +877,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/j/w/n/lenovo-thinkpad-e14-g3-laptop-original-imagf32zjjn6k6cj.jpeg?q=70",
         "details": "CPU: Intel i5-1235U • RAM: 8GB • Storage: 512GB SSD • Display: 14\" FHD • GPU: Intel Iris Xe"
-      }
+      },
+      "tatacliq": 67399,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Lenovo%20ThinkPad%20E14"
     },
     {
       "brand": "Asus VivoBook 15",
-      "amazon": 45999, "flipkart": 44999, "reliance": 46999, "croma": 45800,
+      "amazon": 45999,
+      "flipkart": 44999,
+      "reliance": 46999,
+      "croma": 45800,
       "amazonUrl": "https://www.amazon.in/s?k=Asus+VivoBook+15",
       "flipkartUrl": "https://www.flipkart.com/search?q=Asus+VivoBook+15",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Asus%20VivoBook%2015",
@@ -439,11 +894,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/z/8/e/asus-vivobook-15-x1504va-bq2554ws-thin-light-laptop-original-imagf3hw7pqkp7ws.jpeg?q=70",
         "details": "CPU: Intel i3-1115G4 • RAM: 8GB • Storage: 256GB SSD • Display: 15.6\" FHD • GPU: Intel UHD"
-      }
+      },
+      "tatacliq": 47299,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Asus%20VivoBook%2015"
     },
     {
       "brand": "Asus TUF Gaming F16",
-      "amazon": 86990, "flipkart": 74090, "reliance": 68990, "croma": 86990,
+      "amazon": 86990,
+      "flipkart": 74090,
+      "reliance": 68990,
+      "croma": 86990,
       "amazonUrl": "https://www.amazon.in/ASUS-Processor-4050-6GB-140WTGP-FX677VU-RL055WS/dp/B0DXF2M5S5/ref=sr_1_3?th=1",
       "flipkartUrl": "https://www.flipkart.com/asus-tuf-gaming-f16-2025-creator-mso-2024-m365-basic-ai-pc-i5-14th-gen-intel-core-5-210h-16-gb-512-gb-ssd-windows-11-home-6-graphics-intel-graphics-nvidia-geforce-rtx-4050-144-ghz-fx677vu-rl055ws-laptop/p/itmea62169fa9f52",
       "relianceUrl": "https://www.reliancedigital.in/product/asus-tuf-gaming-f16-fx607vb-rl087ws-gaming-laptop-intel-core-5-processor-210h16-gb512-gb-ssd4-gb-nvidia-graphicswindows-11-homems-officefull-hd-4064-cm-16-inch-mecha-gray-mb8ytt-9215947",
@@ -452,11 +912,15 @@
       "specs": {
         "image": "https://m.media-amazon.com/images/S/aplus-media-library-service-media/8d7111e4-ffe6-410e-b1fe-b712420e7cdb.__CR0,0,970,600_PT0_SX970_V1___.jpg",
         "details": "CPU: Intel i9-13900H • RAM: 32GB • Storage: 2TB SSD • Display: 16\" QHD 165Hz • GPU: RTX 4070 • OS: Windows 11"
-      }
+      },
+      "tatacliq": 81599
     },
     {
       "brand": "Asus ZenBook 14",
-      "amazon": 89999, "flipkart": 88999, "reliance": 91999, "croma": 90900,
+      "amazon": 89999,
+      "flipkart": 88999,
+      "reliance": 91999,
+      "croma": 90900,
       "amazonUrl": "https://www.amazon.in/s?k=Asus+ZenBook+14",
       "flipkartUrl": "https://www.flipkart.com/search?q=Asus+ZenBook+14",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Asus%20ZenBook%2014",
@@ -464,11 +928,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/5/n/b/asus-zenbook-14-ux3404-original-imagf3hwr6dnn9gx.jpeg?q=70",
         "details": "CPU: Intel i7-1360P • RAM: 16GB • Storage: 512GB SSD • Display: 14\" QHD • GPU: Iris Xe"
-      }
+      },
+      "tatacliq": 92499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Asus%20ZenBook%2014"
     },
     {
       "brand": "Acer Swift 3",
-      "amazon": 62999, "flipkart": 61999, "reliance": 63999, "croma": 63300,
+      "amazon": 62999,
+      "flipkart": 61999,
+      "reliance": 63999,
+      "croma": 63300,
       "amazonUrl": "https://www.amazon.in/s?k=Acer+Swift+3",
       "flipkartUrl": "https://www.flipkart.com/search?q=Acer+Swift+3",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Acer%20Swift%203",
@@ -476,11 +945,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l0u20sw0/computer/k/m/b/acer-swift-x-sf314-51-56t8-thin-light-laptop-original-imagc9k7h6fh3fq3.jpeg?q=70",
         "details": "CPU: Intel i5-1240P • RAM: 8GB • Storage: 512GB SSD • Display: 14\" FHD • GPU: Iris Xe"
-      }
+      },
+      "tatacliq": 64499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Acer%20Swift%203"
     },
     {
       "brand": "Acer Aspire 7",
-      "amazon": 75999, "flipkart": 74999, "reliance": 77999, "croma": 76900,
+      "amazon": 75999,
+      "flipkart": 74999,
+      "reliance": 77999,
+      "croma": 76900,
       "amazonUrl": "https://www.amazon.in/s?k=Acer+Aspire+7",
       "flipkartUrl": "https://www.flipkart.com/search?q=Acer+Aspire+7",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Acer%20Aspire%207",
@@ -488,11 +962,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/z/m/p/acer-aspire-7-a715-42g-original-imagf3hwh2wnhfsh.jpeg?q=70",
         "details": "CPU: Ryzen 5 7530U • RAM: 8GB • Storage: 512GB SSD • Display: 15.6\" FHD • GPU: RTX 2050"
-      }
+      },
+      "tatacliq": 78499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Acer%20Aspire%207"
     },
     {
       "brand": "Acer Nitro 5",
-      "amazon": 84999, "flipkart": 83999, "reliance": 86999, "croma": 85900,
+      "amazon": 84999,
+      "flipkart": 83999,
+      "reliance": 86999,
+      "croma": 85900,
       "amazonUrl": "https://www.amazon.in/s?k=Acer+Nitro+5",
       "flipkartUrl": "https://www.flipkart.com/search?q=Acer+Nitro+5",
       "relianceUrl": "https://www.reliancedigital.in/products?q=Acer%20Nitro%205",
@@ -500,11 +979,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/2/l/e/acer-nitro-5-an515-58-original-imagf3hwh7dfzdmm.jpeg?q=70",
         "details": "CPU: Intel i5-12500H • RAM: 8GB • Storage: 512GB SSD • Display: 15.6\" FHD 144Hz • GPU: RTX 3050"
-      }
+      },
+      "tatacliq": 87499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Acer%20Nitro%205"
     },
     {
       "brand": "MSI Modern 14",
-      "amazon": 67999, "flipkart": 66999, "reliance": 69999, "croma": 68900,
+      "amazon": 67999,
+      "flipkart": 66999,
+      "reliance": 69999,
+      "croma": 68900,
       "amazonUrl": "https://www.amazon.in/s?k=MSI+Modern+14",
       "flipkartUrl": "https://www.flipkart.com/search?q=MSI+Modern+14",
       "relianceUrl": "https://www.reliancedigital.in/products?q=MSI%20Modern%2014",
@@ -512,11 +996,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/j/y/x/msi-modern-14-b10mw-030in-thin-light-laptop-original-imagf3hvbk8vv6jj.jpeg?q=70",
         "details": "CPU: Intel i5-1235U • RAM: 8GB • Storage: 512GB SSD • Display: 14\" FHD • GPU: Iris Xe"
-      }
+      },
+      "tatacliq": 70499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=MSI%20Modern%2014"
     },
     {
       "brand": "MSI GF63",
-      "amazon": 74999, "flipkart": 73999, "reliance": 76999, "croma": 75900,
+      "amazon": 74999,
+      "flipkart": 73999,
+      "reliance": 76999,
+      "croma": 75900,
       "amazonUrl": "https://www.amazon.in/s?k=MSI+GF63",
       "flipkartUrl": "https://www.flipkart.com/search?q=MSI+GF63",
       "relianceUrl": "https://www.reliancedigital.in/products?q=MSI%20GF63",
@@ -524,11 +1013,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/p/m/y/msi-gf63-thin-12vc-061in-gaming-laptop-original-imagf3hw8dahxzhu.jpeg?q=70",
         "details": "CPU: Intel i7-12650H • RAM: 16GB • Storage: 512GB SSD • Display: 15.6\" FHD 144Hz • GPU: RTX 4050"
-      }
+      },
+      "tatacliq": 77499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=MSI%20GF63"
     },
     {
       "brand": "MSI Katana 15",
-      "amazon": 79999, "flipkart": 78999, "reliance": 81999, "croma": 80900,
+      "amazon": 79999,
+      "flipkart": 78999,
+      "reliance": 81999,
+      "croma": 80900,
       "amazonUrl": "https://www.amazon.in/s?k=MSI+Katana+15",
       "flipkartUrl": "https://www.flipkart.com/search?q=MSI+Katana+15",
       "relianceUrl": "https://www.reliancedigital.in/products?q=MSI%20Katana%2015",
@@ -536,11 +1030,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/j/i/q/msi-katana-15-2023-original-imagf3hvs6cq7v7h.jpeg?q=70",
         "details": "CPU: Intel i7-12700H • RAM: 16GB • Storage: 1TB SSD • Display: 15.6\" FHD 144Hz • GPU: RTX 4060"
-      }
+      },
+      "tatacliq": 82499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=MSI%20Katana%2015"
     },
     {
       "brand": "Apple MacBook Air M2",
-      "amazon": 83990, "flipkart": 83990, "reliance": 121499, "croma": 120500,
+      "amazon": 83990,
+      "flipkart": 83990,
+      "reliance": 121499,
+      "croma": 120500,
       "amazonUrl": "https://www.amazon.in/s?k=MacBook+Air+M2",
       "flipkartUrl": "https://www.flipkart.com/search?q=MacBook+Air+M2",
       "relianceUrl": "https://www.reliancedigital.in/products?q=MacBook%20Air%20M2",
@@ -549,11 +1048,15 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/kjz8tu80/computer/t/c/z/apple-macbook-air-2022-mqd93hn-a-thin-and-light-laptop-original-imafyhc74ndghhzm.jpeg?q=70",
         "details": "CPU: Apple M2 • RAM: 8GB • Storage: 256GB SSD • Display: 13.6\" Retina • GPU: 10-core • Battery: 18 hours"
-      }
+      },
+      "tatacliq": 105599
     },
     {
       "brand": "Apple MacBook Pro M2",
-      "amazon": 149900, "flipkart": 147999, "reliance": 152499, "croma": 151500,
+      "amazon": 149900,
+      "flipkart": 147999,
+      "reliance": 152499,
+      "croma": 151500,
       "amazonUrl": "https://www.amazon.in/s?k=MacBook+Pro+M2",
       "flipkartUrl": "https://www.flipkart.com/search?q=MacBook+Pro+M2",
       "relianceUrl": "https://www.reliancedigital.in/products?q=MacBook%20Pro%20M2",
@@ -561,11 +1064,16 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/g/r/t/apple-macbook-pro-2022-m2-original-imagf3hwf8a7d9hg.jpeg?q=70",
         "details": "CPU: Apple M2 • RAM: 16GB • Storage: 512GB SSD • Display: 13.3\" Retina • GPU: 10-core • Battery: 20 hours"
-      }
+      },
+      "tatacliq": 152999,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Apple%20MacBook%20Pro%20M2"
     },
     {
       "brand": "Apple MacBook Air M1",
-      "amazon": 89900, "flipkart": 87999, "reliance": 91999, "croma": 90900,
+      "amazon": 89900,
+      "flipkart": 87999,
+      "reliance": 91999,
+      "croma": 90900,
       "amazonUrl": "https://www.amazon.in/s?k=MacBook+Air+M1",
       "flipkartUrl": "https://www.flipkart.com/search?q=MacBook+Air+M1",
       "relianceUrl": "https://www.reliancedigital.in/products?q=MacBook%20Air%20M1",
@@ -573,7 +1081,9 @@
       "specs": {
         "image": "https://rukminim1.flixcart.com/image/312/312/l4h1uvk0/computer/g/r/t/apple-macbook-pro-2022-m2-original-imagf3hwf8a7d9hg.jpeg?q=70",
         "details": "CPU: Apple M1 • RAM: 8GB • Storage: 256GB SSD • Display: 13.3\" Retina • GPU: 8-core • Battery: 18 hours"
-      }
+      },
+      "tatacliq": 92499,
+      "tataCliqUrl": "https://www.tatacliq.com/search/?searchCategory=all&text=Apple%20MacBook%20Air%20M1"
     }
   ]
 }

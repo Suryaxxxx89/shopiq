@@ -29,8 +29,43 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('dispEmail').textContent = em;
     document.getElementById('dispPhone').textContent = ph || 'Not set';
     document.getElementById('dispGender').textContent = gn || 'Not set';
+    updateBadges();
+  }
+
+  function updateBadges() {
+    const wishlist = JSON.parse(localStorage.getItem('shopiq_wishlist') || '[]');
+    const cart = JSON.parse(localStorage.getItem('shopiq_cart') || '[]');
+    const wlBadge = document.getElementById('wishlistCount');
+    const cartBadge = document.getElementById('cartCount');
+    if (wlBadge) {
+      wlBadge.textContent = wishlist.length;
+      wlBadge.style.display = wishlist.length > 0 ? 'inline-block' : 'none';
+    }
+    if (cartBadge) {
+      cartBadge.textContent = cart.length;
+      cartBadge.style.display = cart.length > 0 ? 'inline-block' : 'none';
+    }
+
+    // Update Header Account link
+    const loginLink = document.querySelector('a[href="account.html"]');
+    if (loginLink) {
+      const fn = localStorage.getItem('userFirstName') || 'User';
+      loginLink.innerHTML = `<i class="fas fa-user-circle"></i> ${fn}`;
+    }
   }
   refreshUI();
+
+  // ── Header Search Logic ──
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  if (searchBtn && searchInput) {
+    const doSearch = () => {
+      const q = searchInput.value.trim();
+      if (q) window.location.href = `index.html?q=${encodeURIComponent(q)}`;
+    };
+    searchBtn.addEventListener('click', doSearch);
+    searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') doSearch(); });
+  }
 
   // ── Sidebar navigation ──
   document.querySelectorAll('.acc-menu-item[data-section]').forEach(item => {
@@ -115,10 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let wishlist = JSON.parse(localStorage.getItem('shopiq_wishlist') || '[]');
   if (wishlist.length === 0) {
     wishlist = [
-      { name: 'iPhone 15 Pro Max (256GB)', price: '₹1,59,900', emoji: '📱' },
-      { name: 'Samsung Galaxy S24 Ultra', price: '₹1,29,999', emoji: '📱' },
-      { name: 'Dell XPS 15 Laptop', price: '₹1,49,990', emoji: '💻' },
-      { name: 'Sony WF-1000XM5 Earbuds', price: '₹19,990', emoji: '🎧' },
+      { title: 'iPhone 15 Pro Max (256GB)', price: 159900, priceStr: '₹1,59,900', thumbnail: '', emoji: '📱' },
+      { title: 'Samsung Galaxy S24 Ultra', price: 129999, priceStr: '₹1,29,999', thumbnail: '', emoji: '📱' },
+      { title: 'Dell XPS 15 Laptop', price: 149990, priceStr: '₹1,49,990', thumbnail: '', emoji: '💻' },
+      { title: 'Sony WF-1000XM5 Earbuds', price: 19990, priceStr: '₹19,990', thumbnail: '', emoji: '🎧' },
     ];
   }
 
@@ -130,23 +165,26 @@ document.addEventListener('DOMContentLoaded', () => {
       grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">❤️</div><div class="empty-state-title">Your wishlist is empty</div><div class="empty-state-desc">Save items you love while comparing prices</div><button class="empty-state-btn" onclick="window.location.href=\'index.html\'">Start Shopping</button></div>';
       return;
     }
-    let html = '';
     wishlist.forEach((item, i) => {
-      html += `<div class="wish-card">
-        <div class="wish-img-placeholder">${item.emoji || '🛒'}</div>
+      const displayTitle = item.title || item.name;
+      const displayPrice = item.priceStr || item.price;
+      html += `<div class="wish-card" onclick="window.location.href='index.html?q=${encodeURIComponent(displayTitle)}'">
+        <div class="wish-img-placeholder">${item.thumbnail ? `<img src="${item.thumbnail}" style="width:100%;height:100%;object-fit:contain;">` : (item.emoji || '🛒')}</div>
         <div class="wish-body">
-          <div class="wish-name">${item.name}</div>
-          <div class="wish-price">${item.price}</div>
-          <span class="wish-remove" data-idx="${i}">✕ Remove</span>
+          <div class="wish-name">${displayTitle}</div>
+          <div class="wish-price">${displayPrice}</div>
+          <span class="wish-remove" data-idx="${i}" onclick="event.stopPropagation()">✕</span>
         </div>
       </div>`;
     });
     grid.innerHTML = html;
     grid.querySelectorAll('.wish-remove').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         wishlist.splice(Number(btn.dataset.idx), 1);
         localStorage.setItem('shopiq_wishlist', JSON.stringify(wishlist));
         renderWishlist();
+        updateBadges();
       });
     });
   }

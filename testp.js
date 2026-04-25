@@ -28,6 +28,11 @@ window.onerror = function(msg, url, line, col, error) {
 
 function logout() {
   localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('userFirstName');
+  localStorage.removeItem('userLastName');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userPhone');
+  localStorage.removeItem('userGender');
   window.location.href = 'login.html';
 }
 
@@ -128,6 +133,17 @@ function updateBadges() {
   if (cartBadge) {
     cartBadge.textContent = cart.length;
     cartBadge.style.display = cart.length > 0 ? 'inline-block' : 'none';
+  }
+  
+  // Update Login/Account link
+  const loginLink = document.querySelector('a[href="account.html"]');
+  if (loginLink) {
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      const firstName = localStorage.getItem('userFirstName') || 'User';
+      loginLink.innerHTML = `<i class="far fa-user"></i> ${firstName}`;
+    } else {
+      loginLink.innerHTML = `<i class="far fa-user"></i> Login`;
+    }
   }
 }
 
@@ -1961,11 +1977,34 @@ function buildStorefrontRow(title, items) {
 
 // Initial load
 document.addEventListener('DOMContentLoaded', () => {
-  if (window.location.hash === '#search') {
-    // maybe handle hash-based routing
+  loadState();
+  
+  // Handle Routing via Hash
+  const hash = window.location.hash;
+  if (hash === '#wishlist') {
+    showWishlistPage();
+  } else if (hash === '#cart') {
+    showCartPage();
   } else {
-    showHomePage();
+    // Check for query param
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    if (q) {
+      if (searchInput) searchInput.value = q;
+      fetchPrices(q);
+      showResultsPage();
+    } else {
+      showHomePage();
+    }
   }
+
+  // Listen for hash changes (for back button/navigation)
+  window.addEventListener('hashchange', () => {
+    const newHash = window.location.hash;
+    if (newHash === '#wishlist') showWishlistPage();
+    else if (newHash === '#cart') showCartPage();
+    else if (newHash === '' || newHash === '#home') showHomePage();
+  });
 });
 
 /**

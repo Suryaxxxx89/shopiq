@@ -4,6 +4,7 @@ const NodeCache = require('node-cache');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
+const path = require('path');
 
 // Load fallback data from data.json
 let fallbackData = [];
@@ -101,7 +102,12 @@ const cache = new NodeCache({ stdTTL: 3600 }); // Cache for 1 hour
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname)); // Serve static files from current directory
+
+// In production (Vercel), static files are handled by vercel.json
+// This middleware is only needed for local development
+if (process.env.NODE_ENV !== 'production') {
+  app.use(express.static(path.join(__dirname)));
+}
 
 app.get('/api/data', (req, res) => {
   try {
@@ -818,7 +824,6 @@ app.post('/api/cache/clear', (req, res) => {
 });
 
 // HTML routes for Auth and Account
-const path = require('path');
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
@@ -831,13 +836,18 @@ app.get('/account', (req, res) => {
   res.sendFile(path.join(__dirname, 'account.html'));
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 PriceCompare Server running on http://localhost:${PORT}`);
-  console.log(`📊 Search endpoint: http://localhost:${PORT}/api/search?q=iPhone`);
-  console.log(`💾 Cache enabled (1 hour TTL)`);
-});
+// Export for Vercel
+module.exports = app;
+
+// Start server (only if not running as a serverless function)
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`🚀 PriceCompare Server running on http://localhost:${PORT}`);
+    console.log(`📊 Search endpoint: http://localhost:${PORT}/api/search?q=iPhone`);
+    console.log(`💾 Cache enabled (1 hour TTL)`);
+  });
+}
 
 // Ensure the image proxy endpoint is robust and handles errors gracefully
 app.get('/api/image-proxy', async (req, res) => {

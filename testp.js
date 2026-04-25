@@ -36,11 +36,12 @@ function logout() {
   window.location.href = 'login.html';
 }
 
-// ── CONFIG ─────────────────────────────────────────────────────────────────
-// Backend server URL - point to your running Node.js server
-// Default: http://localhost:3000 (for local development with 'npm start')
-// Change only if you're running the server on a different port/domain
-const API_URL = 'http://localhost:3000';
+// Backend server URL
+// In development: http://localhost:3000
+// In production (Vercel): Use relative path
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  ? 'http://localhost:3000' 
+  : '';
 
 // For production deployment, change to your server URL:
 // const API_URL = 'https://your-domain.com';

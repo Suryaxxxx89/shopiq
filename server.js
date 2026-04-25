@@ -26,16 +26,16 @@ function getFallbackProducts(query, storeKey, storeLabel) {
   if (searchTerms.length === 0) return [];
 
   const importantTerms = searchTerms.filter(t => t.length >= 3); // Words like "lipstick", "mac", "iphone"
-  
+
   const scoredMatched = fallbackData.map(product => {
     const brandLower = (product.brand || '').toLowerCase();
     const specsLower = (product.specs?.details || '').toLowerCase();
     const catLower = (product.category || '').toLowerCase();
     const combinedText = `${brandLower} ${specsLower} ${catLower}`;
-    
+
     let score = 0;
     let importantMatches = 0;
-    
+
     // Special boost for category matching (e.g. searching "Mobiles" should match category: "mobiles")
     if (catLower && query.toLowerCase().includes(catLower.slice(0, -1))) { // match "mobile" in "mobiles"
       score += 5;
@@ -49,36 +49,36 @@ function getFallbackProducts(query, storeKey, storeLabel) {
         if (importantTerms.includes(term)) importantMatches++;
       }
     });
-    
+
     return { product, score, importantMatches };
   })
-  .filter(item => {
-    // 1. Relaxed score threshold for broader coverage
-    const minScore = searchTerms.length * 0.5;
-    // 2. At least 70% of important terms must match
-    const importantThreshold = Math.ceil(importantTerms.length * 0.7);
-    const matchedEnoughImportant = importantTerms.length === 0 || item.importantMatches >= importantThreshold;
-    
-    return item.score >= minScore && matchedEnoughImportant;
-  })
-  .sort((a, b) => b.score - a.score);
+    .filter(item => {
+      // 1. Relaxed score threshold for broader coverage
+      const minScore = searchTerms.length * 0.5;
+      // 2. At least 70% of important terms must match
+      const importantThreshold = Math.ceil(importantTerms.length * 0.7);
+      const matchedEnoughImportant = importantTerms.length === 0 || item.importantMatches >= importantThreshold;
+
+      return item.score >= minScore && matchedEnoughImportant;
+    })
+    .sort((a, b) => b.score - a.score);
 
   const matched = scoredMatched.map(item => item.product).slice(0, 10);
   const products = [];
-  
+
   matched.forEach(product => {
     const price = product[storeKey];
     if (price) {
       const urlKey = storeKey === 'tatacliq' ? 'tataCliqUrl' : `${storeKey}Url`;
       let link = product[urlKey];
       if (!link) {
-         if (storeKey === 'amazon') link = `https://www.amazon.in/s?k=${encodeURIComponent(query)}`;
-         if (storeKey === 'flipkart') link = `https://www.flipkart.com/search?q=${encodeURIComponent(query)}`;
-         if (storeKey === 'croma') link = `https://www.croma.com/search?q=${encodeURIComponent(query)}`;
-         if (storeKey === 'reliance') link = `https://www.reliancedigital.in/search?q=${encodeURIComponent(query)}`;
-         if (storeKey === 'tatacliq') link = `https://www.tatacliq.com/search?q=${encodeURIComponent(query)}`;
+        if (storeKey === 'amazon') link = `https://www.amazon.in/s?k=${encodeURIComponent(query)}`;
+        if (storeKey === 'flipkart') link = `https://www.flipkart.com/search?q=${encodeURIComponent(query)}`;
+        if (storeKey === 'croma') link = `https://www.croma.com/search?q=${encodeURIComponent(query)}`;
+        if (storeKey === 'reliance') link = `https://www.reliancedigital.in/search?q=${encodeURIComponent(query)}`;
+        if (storeKey === 'tatacliq') link = `https://www.tatacliq.com/search?q=${encodeURIComponent(query)}`;
       }
-      
+
       products.push({
         title: product.brand,
         price: price,
@@ -188,16 +188,16 @@ async function scrapeAmazon(query) {
       }
     });
 
-      if (products.length === 0) {
-        console.log(`Amazon live scrape empty for "${query}", using fallback.`);
-        return getFallbackProducts(query, 'amazon', 'Amazon');
-      }
-      return products;
-    } catch (error) {
-      console.error('Amazon scraping error:', error.message);
+    if (products.length === 0) {
+      console.log(`Amazon live scrape empty for "${query}", using fallback.`);
       return getFallbackProducts(query, 'amazon', 'Amazon');
     }
+    return products;
+  } catch (error) {
+    console.error('Amazon scraping error:', error.message);
+    return getFallbackProducts(query, 'amazon', 'Amazon');
   }
+}
 
 // 2. FLIPKART SCRAPER (Updated selectors for 2026)
 async function scrapeFlipkart(query) {
@@ -219,9 +219,9 @@ async function scrapeFlipkart(query) {
 
     // Try container-based approach first
     $('div[data-id], .cPHDOP, .tUxRFH, .slAVV4, .DOjaWF, .yKfJKb, ._75nlfW, .CGtC98, ._1AtVbE, ._13oc-S, .cPHD_L').slice(0, 50).each((i, elem) => {
-      const title = $(elem).find(titleSelectors).first().text().trim() 
-                    || $(elem).find('a[title]').first().attr('title') 
-                    || $(elem).find('img').first().attr('alt');
+      const title = $(elem).find(titleSelectors).first().text().trim()
+        || $(elem).find('a[title]').first().attr('title')
+        || $(elem).find('img').first().attr('alt');
       const priceRaw = $(elem).find(priceSelectors).first().text();
       const priceMatch = priceRaw.match(/[\d,]+/);
       const price = priceMatch ? parseInt(priceMatch[0].replace(/,/g, '')) : 0;
@@ -319,7 +319,7 @@ async function scrapeCroma(query) {
             }
           });
         }
-      } catch(e) {}
+      } catch (e) { }
     });
 
     // Try meta/product card selectors
@@ -387,7 +387,7 @@ async function scrapeRelianceDigital(query) {
             }
           }
         });
-      } catch(e) {}
+      } catch (e) { }
     });
 
     // Try __NEXT_DATA__ or inline JSON
@@ -413,7 +413,7 @@ async function scrapeRelianceDigital(query) {
                 }
               });
             }
-          } catch(e) {}
+          } catch (e) { }
         }
       });
     }
@@ -468,9 +468,9 @@ async function scrapeTataCliq(query) {
     if (nextDataEl.length) {
       try {
         const nextData = JSON.parse(nextDataEl.html());
-        const searchData = nextData?.props?.pageProps?.searchData?.products 
-                        || nextData?.props?.pageProps?.products
-                        || [];
+        const searchData = nextData?.props?.pageProps?.searchData?.products
+          || nextData?.props?.pageProps?.products
+          || [];
         searchData.slice(0, 40).forEach(p => {
           const title = p.productName || p.name || p.title;
           const price = p.price?.value || p.salePrice || p.price;
@@ -484,7 +484,7 @@ async function scrapeTataCliq(query) {
             });
           }
         });
-      } catch(e) { console.error('TataCliq NEXT_DATA parse error:', e.message); }
+      } catch (e) { console.error('TataCliq NEXT_DATA parse error:', e.message); }
     }
 
     // Try JSON-LD
@@ -507,7 +507,7 @@ async function scrapeTataCliq(query) {
               }
             }
           });
-        } catch(e) {}
+        } catch (e) { }
       });
     }
 
@@ -583,12 +583,12 @@ app.get('/api/search', async (req, res) => {
     // --- Recursive Discovery (Deep Search) ---
     const storesWithResults = new Set(allProducts.map(p => p.store));
     const emptyStores = ['amazon', 'flipkart', 'croma', 'reliance', 'tatacliq'].filter(s => !storesWithResults.has(s));
-    
+
     if (emptyStores.length > 0 && allProducts.length > 0) {
       const topProduct = allProducts[0];
       const deepQuery = topProduct.title;
       console.log(`🔄 Deep Search: Attempting to find "${deepQuery}" in empty stores: ${emptyStores.join(', ')}`);
-      
+
       const deepSearchPromises = emptyStores.map(store => {
         if (store === 'amazon') return scrapeAmazon(deepQuery);
         if (store === 'flipkart') return scrapeFlipkart(deepQuery);
@@ -626,7 +626,7 @@ app.get('/api/search', async (req, res) => {
 
     // ── Relevance scoring: sort products by how well title matches the search query ──
     const queryTerms = q.toLowerCase().split(/\s+/).filter(t => t.length > 1);
-    
+
     allProducts.forEach(product => {
       if (product.isSearchLink) { product._relevance = -1; return; }
       const titleLower = (product.title || '').toLowerCase();
@@ -733,11 +733,11 @@ app.get('/api/extract', async (req, res) => {
 
     const $ = cheerio.load(response.data);
     let title = $('title').text().trim();
-    
+
     // Try to get more specific product title if possible
     const metaTitle = $('meta[property="og:title"]').attr('content');
     const h1Title = $('h1').first().text().trim();
-    
+
     title = metaTitle || h1Title || title;
 
     res.json({ success: true, title: title });
@@ -751,7 +751,7 @@ app.get('/api/extract', async (req, res) => {
 app.get('/extract', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'URL required' });
-  
+
   try {
     const response = await axios.get(url, {
       headers: { ...COMMON_HEADERS, 'User-Agent': getRandomUserAgent() },

@@ -426,9 +426,16 @@ async function renderHomeContent() {
     const res = await fetch(`${API_URL}/api/data`);
     const data = await res.json();
     
-    // Render Deals (Mixed Mobiles/Laptops)
-    const all = [...(data.mobiles || []), ...(data.laptops || [])];
-    dealsContainer.innerHTML = all.slice(0, 10).map(item => {
+    // Render Deals (All categories)
+    const all = [];
+    Object.keys(data).forEach(cat => {
+      if (Array.isArray(data[cat])) all.push(...data[cat]);
+    });
+    
+    // Randomize deals for variety
+    const shuffled = all.sort(() => 0.5 - Math.random());
+    
+    dealsContainer.innerHTML = shuffled.slice(0, 10).map(item => {
       const prices = [item.amazon, item.flipkart, item.reliance, item.croma, item.tatacliq].filter(p => p > 0);
       const minP = prices.length ? Math.min(...prices) : (item.price || 50000);
       const rawImg = (item.specs && item.specs.image) ? item.specs.image : '';

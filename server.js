@@ -9,7 +9,8 @@ const path = require('path');
 // Load fallback data from data.json
 let fallbackData = [];
 try {
-  const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+  const dataPath = path.join(__dirname, 'data.json');
+  const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
   Object.keys(data).forEach(category => {
     if (Array.isArray(data[category])) {
       fallbackData = fallbackData.concat(data[category]);
@@ -111,7 +112,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.get('/api/data', (req, res) => {
   try {
-    const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+    const dataPath = path.join(__dirname, 'data.json');
+    const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
     res.json(data);
   } catch (e) {
     res.status(500).json({ error: 'Failed to load storefront data' });

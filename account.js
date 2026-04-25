@@ -52,6 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const fn = localStorage.getItem('userFirstName') || 'User';
       loginLink.innerHTML = `<i class="fas fa-user-circle"></i> ${fn}`;
     }
+
+    // Update theme toggle icon
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      const isDark = document.documentElement.classList.contains('dark-theme');
+      themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
   }
   refreshUI();
 
@@ -65,6 +72,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     searchBtn.addEventListener('click', doSearch);
     searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') doSearch(); });
+  }
+
+  // Theme Toggle Listener
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark-theme');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateBadges(); // Refresh icon
+    });
   }
 
   // ── Sidebar navigation ──
@@ -165,13 +182,16 @@ document.addEventListener('DOMContentLoaded', () => {
       grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">❤️</div><div class="empty-state-title">Your wishlist is empty</div><div class="empty-state-desc">Save items you love while comparing prices</div><button class="empty-state-btn" onclick="window.location.href=\'index.html\'">Start Shopping</button></div>';
       return;
     }
+    let html = '';
     wishlist.forEach((item, i) => {
       const displayTitle = item.title || item.name;
-      const displayPrice = item.priceStr || item.price;
+      const displayPrice = item.priceStr || (item.price ? '₹' + item.price.toLocaleString('en-IN') : 'N/A');
+      const thumbnail = item.thumbnail || (item.specs && item.specs.image) || '';
+      
       html += `<div class="wish-card" onclick="window.location.href='index.html?q=${encodeURIComponent(displayTitle)}'">
-        <div class="wish-img-placeholder">${item.thumbnail ? `<img src="${item.thumbnail}" style="width:100%;height:100%;object-fit:contain;">` : (item.emoji || '🛒')}</div>
+        <div class="wish-img-placeholder">${thumbnail ? `<img src="${thumbnail}" style="width:100%;height:100%;object-fit:contain;">` : (item.emoji || '🛒')}</div>
         <div class="wish-body">
-          <div class="wish-name">${displayTitle}</div>
+          <div class="wish-name" title="${displayTitle}">${displayTitle}</div>
           <div class="wish-price">${displayPrice}</div>
           <span class="wish-remove" data-idx="${i}" onclick="event.stopPropagation()">✕</span>
         </div>
@@ -181,7 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
     grid.querySelectorAll('.wish-remove').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        wishlist.splice(Number(btn.dataset.idx), 1);
+        const idx = Number(btn.dataset.idx);
+        wishlist.splice(idx, 1);
         localStorage.setItem('shopiq_wishlist', JSON.stringify(wishlist));
         renderWishlist();
         updateBadges();

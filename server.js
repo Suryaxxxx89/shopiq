@@ -88,6 +88,9 @@ function getFallbackProducts(query, storeKey, storeLabel) {
         link: link || '#',
         source: storeLabel,
         store: storeKey,
+        category: product.category,
+        specs: product.specs,
+        priceHistory: product.priceHistory,
         rating: 4.8,
         delivery: 'Free delivery (Fallback Data)',
         isFallback: true
@@ -155,8 +158,13 @@ async function scrapeAmazon(query) {
     const response = await axios.get(
       `https://www.amazon.in/s?k=${encodeURIComponent(query)}`,
       {
-        headers: { ...COMMON_HEADERS, 'User-Agent': getRandomUserAgent() },
-        timeout: 8000
+        headers: { 
+          ...COMMON_HEADERS, 
+          'User-Agent': getRandomUserAgent(),
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+          'Referer': 'https://www.amazon.in/'
+        },
+        timeout: 10000
       }
     );
 
@@ -207,8 +215,13 @@ async function scrapeFlipkart(query) {
     const response = await axios.get(
       `https://www.flipkart.com/search?q=${encodeURIComponent(query)}`,
       {
-        headers: { ...COMMON_HEADERS, 'User-Agent': getRandomUserAgent() },
-        timeout: 8000
+        headers: { 
+          ...COMMON_HEADERS, 
+          'User-Agent': getRandomUserAgent(),
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+          'Referer': 'https://www.flipkart.com/'
+        },
+        timeout: 10000
       }
     );
 
@@ -632,15 +645,22 @@ app.get('/api/search', async (req, res) => {
     allProducts.forEach(product => {
       if (product.isSearchLink) { product._relevance = -1; return; }
       const titleLower = (product.title || '').toLowerCase();
+      const catLower = (product.category || '').toLowerCase();
       let score = 0;
       let matchCount = 0;
 
       queryTerms.forEach(term => {
-        if (titleLower.includes(term)) {
+        const isMatch = titleLower.includes(term);
+        const isCatMatch = catLower.includes(term);
+
+        if (isMatch || isCatMatch) {
           matchCount++;
           score += 20;
-          // Bonus if term appears at the start of the title
-          if (titleLower.startsWith(term) || titleLower.indexOf(' ' + term) < 15) score += 10;
+          if (isMatch) {
+            // Bonus if term appears at the start of the title
+            if (titleLower.startsWith(term) || titleLower.indexOf(' ' + term) < 15) score += 10;
+          }
+          if (isCatMatch) score += 15; // Category match is very relevant
         }
       });
 
@@ -648,14 +668,19 @@ app.get('/api/search', async (req, res) => {
       const matchRatio = queryTerms.length > 0 ? matchCount / queryTerms.length : 0;
       score += matchRatio * 30;
 
+      // Special handling for single-word category searches (e.g. "Mobiles")
+      const isSingleWordCategorySearch = queryTerms.length === 1 && (catLower.includes(queryTerms[0]) || queryTerms[0].includes(catLower.slice(0, -1)));
+      if (isSingleWordCategorySearch) {
+        score += 50; // Boost category matches when searching for category names
+      }
+
       // STRICTER FILTERING: If query has 2+ terms, and result matches < 60% of them, penalize heavily
-      // This stops "Lakme Lipstick" from appearing high when searching "MAC Lipstick"
       if (queryTerms.length >= 2 && matchRatio < 0.6) {
         score -= 60;
       }
 
-      // Penalty for very short titles
-      if (titleLower.length < 8) score -= 10;
+      // Penalty for very short titles (unless it's a strong category match)
+      if (titleLower.length < 8 && !isSingleWordCategorySearch) score -= 10;
 
       // Strict penalty for accessories if user didn't explicitly search for them
       const isAccessorySearch = queryTerms.some(t => ['case', 'cover', 'glass', 'protector', 'cable', 'charger', 'adapter'].includes(t));
@@ -768,8 +793,30 @@ app.get('/extract', async (req, res) => {
 });
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is running' });
+app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
+
+// ============ IMAGE PROXY TO BYPASS CORS ============
+app.get('/api/image-proxy', async (req, res) => {
+  const imageUrl = req.query.url;
+  if (!imageUrl) return res.status(400).send('URL required');
+  try {
+    const response = await axios({
+      method: 'GET',
+      url: imageUrl,
+      responseType: 'stream',
+      headers: {
+        'User-Agent': getRandomUserAgent(),
+        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+        'Referer': new URL(imageUrl).origin 
+      },
+      timeout: 5000
+    });
+    res.setHeader('Content-Type', response.headers['content-type'] || 'image/jpeg');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    response.data.pipe(res);
+  } catch (error) {
+    res.status(500).send('Error fetching image');
+  }
 });
 
 // Get products by specific store

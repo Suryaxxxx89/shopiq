@@ -3,11 +3,11 @@
  */
 
 // ── AUTH CHECK ─────────────────────────────────────────────────────────────
-(function() {
+(function () {
   const isLoggedIn = localStorage.getItem('isLoggedIn');
-  const isAuthPage = window.location.pathname.includes('login.html') || 
-                     window.location.pathname.includes('signup.html');
-  
+  const isAuthPage = window.location.pathname.includes('login.html') ||
+    window.location.pathname.includes('signup.html');
+
   // Skip auth check for localhost development if needed, or just be very careful
   if (!isLoggedIn && !isAuthPage) {
     console.warn('🔒 User not logged in, redirecting to login.html');
@@ -16,7 +16,7 @@
 })();
 
 // Global Error Handler to hide splash screen if anything crashes
-window.onerror = function(msg, url, line, col, error) {
+window.onerror = function (msg, url, line, col, error) {
   console.error('💥 GLOBAL ERROR:', msg, 'at', line, ':', col);
   const splash = document.getElementById('splashScreen');
   if (splash) {
@@ -39,8 +39,8 @@ function logout() {
 // Backend server URL
 // In development: http://localhost:3000
 // In production (Vercel): Use relative path
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-  ? 'http://localhost:3000' 
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3000'
   : '';
 
 // For production deployment, change to your server URL:
@@ -135,7 +135,7 @@ function updateBadges() {
     cartBadge.textContent = cart.length;
     cartBadge.style.display = cart.length > 0 ? 'inline-block' : 'none';
   }
-  
+
   // Update Login/Account link
   const loginLink = document.querySelector('a[href="account.html"]');
   if (loginLink) {
@@ -218,13 +218,13 @@ function showWishlistPage() {
   hideAllPages();
   const wp = document.getElementById('wishlistPage');
   wp.style.display = 'block';
-  
+
   const container = document.getElementById('wishlistContainer');
   if (wishlist.length === 0) {
     container.innerHTML = '<div style="text-align:center; padding: 4rem; color: var(--text-muted);">Your wishlist is empty.</div>';
     return;
   }
-  
+
   // We can reuse the HTML generation logic but simplify it
   let html = '';
   wishlist.forEach((item, idx) => {
@@ -232,7 +232,7 @@ function showWishlistPage() {
     let minPrice = Infinity;
     let storeLink = '#';
     let storeLogo = '';
-    
+
     // Find best price to show
     if (item.storeVariants) {
       Object.values(item.storeVariants).forEach(v => {
@@ -242,10 +242,10 @@ function showWishlistPage() {
         }
       });
     }
-    
+
     const priceDisplay = minPrice !== Infinity ? fmt(minPrice) : 'Check Store';
     const itemStr = encodeURIComponent(JSON.stringify(item));
-    
+
     html += `
       <div class="deal-card" onclick="showComparePage(JSON.parse(decodeURIComponent('${itemStr}')))">
         <div class="wishlist-btn-float active" onclick="toggleWishlist(event, '${itemStr}')" title="Remove from wishlist">
@@ -265,13 +265,13 @@ function showCartPage() {
   hideAllPages();
   const cp = document.getElementById('cartPage');
   cp.style.display = 'block';
-  
+
   const container = document.getElementById('cartContainer');
   if (cart.length === 0) {
     container.innerHTML = '<div style="text-align:center; padding: 4rem; color: var(--text-muted);">Your cart is empty.</div>';
     return;
   }
-  
+
   let html = '';
   let mockTotal = 0;
   cart.forEach((item) => {
@@ -279,7 +279,7 @@ function showCartPage() {
     let minPrice = Infinity;
     let storeLink = '#';
     let bestStoreName = 'Store';
-    
+
     if (item.storeVariants) {
       Object.keys(item.storeVariants).forEach(key => {
         let v = item.storeVariants[key];
@@ -291,10 +291,10 @@ function showCartPage() {
         }
       });
     }
-    
+
     if (minPrice !== Infinity) mockTotal += minPrice;
     const priceDisplay = minPrice !== Infinity ? fmt(minPrice) : 'Check Store';
-    
+
     html += `
       <div class="cart-item-row">
         <img src="${imgSrc}" class="cart-item-img" onerror="this.src='https://placehold.co/80x80?text=No+Img'" />
@@ -310,7 +310,7 @@ function showCartPage() {
       </div>
     `;
   });
-  
+
   if (mockTotal > 0) {
     html += `
       <div style="text-align:right; margin-top: 2rem; padding-top: 1.5rem; border-top: 2px dashed var(--border);">
@@ -320,7 +320,7 @@ function showCartPage() {
       </div>
     `;
   }
-  
+
   container.innerHTML = html;
 }
 
@@ -338,7 +338,7 @@ const priceChart = document.getElementById('priceChart');
 const storeLinks = document.getElementById('storeLinks');
 
 // ── Splash ─────────────────────────────────────────────────────────────────
-function hideSplash() { 
+function hideSplash() {
   const splash = document.getElementById('splashScreen');
   if (splash) {
     splash.classList.add('hidden');
@@ -387,7 +387,7 @@ async function showHomePage() {
   document.getElementById('comparePage').style.display = 'none';
   document.getElementById('searchPage').style.display = 'none';
   window.scrollTo(0, 0);
-  
+
   // Populate Home Content
   renderHomeContent();
 }
@@ -425,35 +425,35 @@ async function renderHomeContent() {
   try {
     const res = await fetch(`${API_URL}/api/data`);
     const data = await res.json();
-    
+
     // Render Deals (All categories)
     const all = [];
     Object.keys(data).forEach(cat => {
       if (Array.isArray(data[cat])) all.push(...data[cat]);
     });
-    
+
     // Randomize deals for variety
     const shuffled = all.sort(() => 0.5 - Math.random());
-    
+
     dealsContainer.innerHTML = shuffled.slice(0, 10).map(item => {
       const prices = [item.amazon, item.flipkart, item.reliance, item.croma, item.tatacliq].filter(p => p > 0);
       const minP = prices.length ? Math.min(...prices) : (item.price || 50000);
       const rawImg = (item.specs && item.specs.image) ? item.specs.image : '';
       const fallbackImg = getBrandFallback(item.brand);
       const emoji = getBrandEmoji(item.brand);
-      
+
       // Image HTML: direct from GSMArena; fallback to brand logo then emoji
       const fb = fallbackImg || '';
       let imgHtml;
       if (rawImg) {
         imgHtml = '<img src="' + rawImg + '" data-fallback="' + fb + '" onerror="imgError(this)" style="max-width:100%; max-height:140px; object-fit:contain;" />'
-                + '<div style="display:none;align-items:center;justify-content:center;font-size:3rem;height:140px;">' + emoji + '</div>';
+          + '<div style="display:none;align-items:center;justify-content:center;font-size:3rem;height:140px;">' + emoji + '</div>';
       } else {
         imgHtml = `<div style="display:flex;align-items:center;justify-content:center;font-size:3rem;height:140px;">${emoji}</div>`;
       }
-      
+
       return `
-        <div class="deal-card" onclick="searchQuery('${item.brand.replace(/'/g,"\\'")}')">
+        <div class="deal-card" onclick="searchQuery('${item.brand.replace(/'/g, "\\'")}')">
           <div style="height:150px; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
             ${imgHtml}
           </div>
@@ -472,13 +472,13 @@ async function renderHomeContent() {
       { name: 'OnePlus', logo: brandFallbacks['oneplus'] },
       { name: 'Asus', logo: brandFallbacks['asus'] },
     ];
-    brandsContainer.innerHTML = brands.map(function(b) {
+    brandsContainer.innerHTML = brands.map(function (b) {
       return '<div class="brand-item" onclick="searchQuery(\'' + b.name + '\')" style="min-width:120px;text-align:center;cursor:pointer;">'
-           + '<div style="width:90px;height:90px;margin:0 auto 10px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);padding:12px;">'
-           + '<img src="' + b.logo + '" style="max-width:100%;max-height:100%;object-fit:contain;" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + getBrandEmoji(b.name) + '\';" />'
-           + '</div>'
-           + '<div style="font-weight:600;font-size:13px;color:var(--text);">' + b.name + '</div>'
-           + '</div>';
+        + '<div style="width:90px;height:90px;margin:0 auto 10px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);padding:12px;">'
+        + '<img src="' + b.logo + '" style="max-width:100%;max-height:100%;object-fit:contain;" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + getBrandEmoji(b.name) + '\';" />'
+        + '</div>'
+        + '<div style="font-weight:600;font-size:13px;color:var(--text);">' + b.name + '</div>'
+        + '</div>';
     }).join('');
 
   } catch (e) {
@@ -587,15 +587,15 @@ async function fetchPrices(rawQuery) {
         fetch(`${API_URL}/api/search?q=${encodeURIComponent(rawQuery)}`),
         new Promise((_, reject) => setTimeout(() => reject(new Error('timeout after 8s')), 8000))
       ]);
-      
+
       if (response.ok) {
         const data = await response.json();
-        
+
         console.log(`API Response:`, data);
-        
+
         if (data.results && data.results.length > 0) {
           console.log(`✅ Got ${data.results.length} results from backend server`);
-          
+
           // Transform API response to match expected format
           const shopping_results = data.results.map(product => ({
             title: product.title,
@@ -642,7 +642,7 @@ async function fetchPrices(rawQuery) {
     const data = await res.json();
     const category = categoryFilter.value;
     let products = [];
-    
+
     if (category === 'all') {
       Object.keys(data).forEach(key => {
         if (Array.isArray(data[key])) {
@@ -676,7 +676,7 @@ async function fetchPrices(rawQuery) {
         const altUrlKey = store.key === 'tatacliq' ? 'tataCliqUrl' : urlKey;
         const productUrl = product[urlKey] || product[altUrlKey];
         const storePrice = product[store.key];
-        
+
         if (productUrl && storePrice) {
           shopping_results.push({
             title: product.brand,
@@ -730,28 +730,28 @@ function processAndRender(raw) {
 
   // Group by product title to show best price and all store options
   const productMap = {};
-  
+
 
   // ── No client-side relevance filter — backend already handles relevance ──
   const filteredRaw = raw;
 
   filteredRaw.forEach(item => {
     if (item.extracted_price === undefined || item.extracted_price === null) return;
-    
+
     const store = matchStore(item);
     if (!store) {
       console.warn('Could not match store for item:', item);
       return;
     }
-    
+
     if (!activeStores.includes(store.key)) return;
 
     const titleKey = item.title.toLowerCase().trim();
-    
+
     // Stricter fuzzy matching to group the same product from different stores
     let matchedKey = null;
     const currentWords = titleKey.split(/[\s\-\(\),]+/).filter(w => w.length > 0);
-    
+
     const isModelWord = (w) => (/^[0-9]+$/.test(w) && parseInt(w) < 100) || ['pro', 'max', 'plus', 'ultra', 'fe', 'air', 'm1', 'm2', 'm3', 'fold', 'flip'].includes(w);
     const currentModels = currentWords.filter(isModelWord).sort().join(',');
 
@@ -759,45 +759,45 @@ function processAndRender(raw) {
       if (existingKey === titleKey) {
         // Prevent grouping if the store already has this exact product (e.g. Amazon returned duplicates)
         if (!productMap[existingKey].storeVariants[store.key]) {
-           matchedKey = existingKey;
-           break;
+          matchedKey = existingKey;
+          break;
         }
       }
-      
+
       // Do not group if the existing product already has a variant from THIS store!
       // (This prevents an Amazon product from merging into another Amazon product)
       if (productMap[existingKey].storeVariants[store.key]) continue;
-      
+
       // Normalize to separate numbers and letters (e.g., 128gb -> 128 gb) for better matching
       const normalizeWords = (str) => str.toLowerCase().replace(/([0-9]+)([a-z]+)/gi, '$1 $2').split(/[\s\-\(\),]+/).filter(w => w.length > 0);
-      
+
       const currentNorm = normalizeWords(titleKey);
       const existingNorm = normalizeWords(existingKey);
-      
+
       const currentModels = currentNorm.filter(isModelWord).sort().join(',');
       const existingModels = existingNorm.filter(isModelWord).sort().join(',');
-      
+
       // Must have the exact same model modifiers (e.g., '15' vs '15,pro,max')
       if (currentModels !== existingModels) continue;
-      
+
       let matches = 0;
       for (const word of currentNorm) {
         if (word.length > 1 && existingNorm.includes(word)) matches++;
       }
-      
-      const len1 = currentNorm.filter(w=>w.length>1).length;
-      const len2 = existingNorm.filter(w=>w.length>1).length;
+
+      const len1 = currentNorm.filter(w => w.length > 1).length;
+      const len2 = existingNorm.filter(w => w.length > 1).length;
       if (len1 === 0 || len2 === 0) continue;
-      
+
       const ratioMin = matches / Math.min(len1, len2);
       if (ratioMin >= 0.5) {
         matchedKey = existingKey;
         break;
       }
     }
-    
+
     const targetKey = matchedKey || titleKey;
-    
+
     if (!productMap[targetKey]) {
       productMap[targetKey] = {
         title: item.title,
@@ -810,10 +810,12 @@ function processAndRender(raw) {
         rating: item.rating || null,
         reviews: item.reviews || null,
         store,
-        storeVariants: {}
+        storeVariants: {},
+        specs: item.specs || null,
+        priceHistory: item.priceHistory || null
       };
     }
-    
+
     // Track this product across all stores
     productMap[targetKey].storeVariants[store.key] = {
       price: item.extracted_price,
@@ -824,7 +826,7 @@ function processAndRender(raw) {
       delivery: item.delivery,
       store: store
     };
-    
+
     // Update main entry to show cheapest option
     if (item.extracted_price < productMap[targetKey].price) {
       productMap[targetKey].price = item.extracted_price;
@@ -839,10 +841,10 @@ function processAndRender(raw) {
   // Inject "View on Store" links for any store missing from each product
   Object.values(productMap).forEach(product => {
     if (!product || product.price === 0) return; // skip search-link placeholder cards
-    
+
     // Create a clean title for searching (remove weird characters that might break store search engines)
     const cleanTitle = product.title.replace(/[^\w\s-]/gi, ' ').replace(/\s+/g, ' ').trim();
-    
+
     const specificStoreUrls = {
       amazon: `https://www.amazon.in/s?k=${encodeURIComponent(cleanTitle)}`,
       flipkart: `https://www.flipkart.com/search?q=${encodeURIComponent(cleanTitle)}`,
@@ -873,7 +875,7 @@ function processAndRender(raw) {
           store: s,
           isSearchLink: false
         };
-        
+
         // Update main entry to show cheapest option if this synthetic price is lower
         if (syntheticPrice < product.price) {
           product.price = syntheticPrice;
@@ -914,13 +916,13 @@ function processAndRender(raw) {
     const lowerBound = Math.max(0, q1 - 1.5 * iqr);
     // Alternatively, if the cheapest item is < 20% of median, it's probably an accessory
     const median = prices[Math.floor(prices.length * 0.5)];
-    
+
     validForChart = currentResults.filter(item => {
       // Exclude if price is suspiciously low compared to median (e.g., a case vs a phone)
       if (item.price < median * 0.2) return false;
       return true;
     });
-    
+
     if (validForChart.length === 0) validForChart = currentResults;
   }
 
@@ -964,14 +966,14 @@ function renderCards(items) {
   }
 
   const storeInfo = {};
-  STORES.forEach(function(s) { storeInfo[s.key] = s; });
+  STORES.forEach(function (s) { storeInfo[s.key] = s; });
 
   var html = '';
 
-  items.forEach(function(item, idx) {
+  items.forEach(function (item, idx) {
     // Build store price rows
     var allStoreRows = [];
-    STORES.forEach(function(store) {
+    STORES.forEach(function (store) {
       var variant = item.storeVariants ? item.storeVariants[store.key] : null;
       if (variant && variant.isSearchLink) {
         allStoreRows.push({ key: store.key, label: store.label, price: Infinity, priceStr: 'View on Store →', link: variant.link || '#', logo: store.logo, available: true, isSearchLink: true });
@@ -983,22 +985,25 @@ function renderCards(items) {
         allStoreRows.push({ key: store.key, label: store.label, price: Infinity, priceStr: '\u2014', link: '#', logo: store.logo, available: false });
       }
     });
-    allStoreRows.sort(function(a, b) { return a.price - b.price; });
+    allStoreRows.sort(function (a, b) { return a.price - b.price; });
 
     var cheapestPrice = allStoreRows[0] ? allStoreRows[0].price : 0;
     var cheapestLink = allStoreRows[0] ? allStoreRows[0].link : '#';
-    var availableStores = allStoreRows.filter(function(r) { return r.available; });
+    var availableStores = allStoreRows.filter(function (r) { return r.available; });
 
     // MRP
     var mrpPrice = 0;
-    availableStores.forEach(function(r) { if (r.price > mrpPrice && r.price !== Infinity) mrpPrice = r.price; });
+    availableStores.forEach(function (r) { if (r.price > mrpPrice && r.price !== Infinity) mrpPrice = r.price; });
     var discount = mrpPrice > cheapestPrice ? Math.round(((mrpPrice - cheapestPrice) / mrpPrice) * 100) : 0;
 
     // Image
     var imgSrc = item.thumbnail || '';
+    if (imgSrc && (imgSrc.startsWith('http') || imgSrc.startsWith('//'))) {
+      imgSrc = `${API_URL}/api/image-proxy?url=${encodeURIComponent(imgSrc)}`;
+    }
     var emoji = getBrandEmoji(item.title);
     var gradient = getBrandGradient(item.title);
-    var imgHtml = imgSrc ? 
+    var imgHtml = imgSrc ?
       '<img src="' + imgSrc + '" onerror="this.style.display=\x27none\x27;this.nextElementSibling.style.display=\x27flex\x27;" alt="' + item.title + '" loading="lazy" />' +
       '<div class="product-thumb-fallback" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;background:' + gradient + ';"><span style="font-size:3.5rem;">' + emoji + '</span></div>'
       :
@@ -1012,7 +1017,7 @@ function renderCards(items) {
     var specsHtml = '';
     if (item.specs && item.specs.details) {
       var lines = item.specs.details.split('\n').slice(0, 5);
-      lines.forEach(l => { if(l.trim()) specsHtml += '<li>' + l.trim() + '</li>'; });
+      lines.forEach(l => { if (l.trim()) specsHtml += '<li>' + l.trim() + '</li>'; });
     } else {
       specsHtml += '<li>Brand Warranty Available</li>';
       specsHtml += '<li>High Quality Product</li>';
@@ -1021,7 +1026,7 @@ function renderCards(items) {
 
     // Compare Stores Table
     var compareHtml = '';
-    allStoreRows.forEach(function(r) {
+    allStoreRows.forEach(function (r) {
       var isBest = r.available && !r.isSearchLink && r.price === cheapestPrice && cheapestPrice !== Infinity;
       var priceLabel = r.isSearchLink ? 'View' : (r.available ? fmt(r.price) : 'N/A');
       compareHtml += `
@@ -1037,7 +1042,7 @@ function renderCards(items) {
 
     // Check if the overall product is a "Search Link" product
     const isMainSearchLink = availableStores.every(s => s.isSearchLink);
-    const mainPriceHtml = isMainSearchLink ? 
+    const mainPriceHtml = isMainSearchLink ?
       `<div class="fk-main-price" style="font-size:1.2rem;">View Deals →</div>` :
       `<div class="fk-main-price">${fmt(cheapestPrice)}</div>
        ${discount > 0 ? `<div class="fk-old-price">${fmt(mrpPrice)}</div><div class="fk-discount">${discount}% off</div>` : ''}`;
@@ -1078,15 +1083,15 @@ function renderCards(items) {
   resultsList.innerHTML = html;
 
   // Click card -> compare page
-  resultsList.querySelectorAll('.fk-product-card').forEach(function(card) {
-    card.addEventListener('click', function(e) {
+  resultsList.querySelectorAll('.fk-product-card').forEach(function (card) {
+    card.addEventListener('click', function (e) {
       // If clicking a store row, go to that store instead of compare page
       const storeRow = e.target.closest('.fk-store-row');
       if (storeRow) {
         const storeName = storeRow.querySelector('.fk-store-name span').textContent;
         const resultIndex = Number(card.dataset.index);
         const item = currentResults[resultIndex];
-        
+
         // Find the matching store variant link
         for (let key in item.storeVariants) {
           if (STORES.find(s => s.key === key).label === storeName) {
@@ -1108,7 +1113,7 @@ function renderChart() {
     console.warn('Chart elements not found in DOM');
     return;
   }
-  
+
   const stores = Object.values(bestPerStore).sort((a, b) => a.price - b.price);
   if (stores.length < 1) { graphCard.style.display = 'none'; return; }
 
@@ -1161,11 +1166,11 @@ function renderPriceHistory(productData, selectedItem) {
   }
 
   const history = productData.priceHistory;
-  
+
   // Collect all dates and stores
   const allDates = new Set();
   const storeKeys = Object.keys(history);
-  
+
   storeKeys.forEach(store => {
     if (history[store] && Array.isArray(history[store])) {
       history[store].forEach(entry => {
@@ -1184,7 +1189,7 @@ function renderPriceHistory(productData, selectedItem) {
   const margin = { top: 20, right: 20, bottom: 40, left: 50 };
   const width = svg.clientWidth - margin.left - margin.right;
   const height = 320 - margin.top - margin.bottom;
-  
+
   // Find min/max prices
   let minPrice = Infinity, maxPrice = 0;
   storeKeys.forEach(store => {
@@ -1195,7 +1200,7 @@ function renderPriceHistory(productData, selectedItem) {
       });
     }
   });
-  
+
   const priceRange = maxPrice - minPrice || 1;
   const padding = priceRange * 0.1;
   const minY = minPrice - padding;
@@ -1210,7 +1215,7 @@ function renderPriceHistory(productData, selectedItem) {
 
   // Clear SVG
   svg.innerHTML = '';
-  
+
   // Create group for chart
   const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   g.setAttribute('transform', `translate(${margin.left},${margin.top})`);
@@ -1275,7 +1280,7 @@ function renderPriceHistory(productData, selectedItem) {
       circle.setAttribute('stroke', '#fff');
       circle.setAttribute('stroke-width', '2');
       circle.setAttribute('class', 'history-point');
-      
+
       // Add hover tooltip
       circle.style.cursor = 'pointer';
       circle.addEventListener('mouseover', () => {
@@ -1296,7 +1301,7 @@ function renderPriceHistory(productData, selectedItem) {
         const labels = g.querySelectorAll('.history-label');
         labels.forEach(l => l.remove());
       });
-      
+
       g.appendChild(circle);
     });
   });
@@ -1353,7 +1358,7 @@ function renderPriceHistory(productData, selectedItem) {
   let legendX = 10;
   storeKeys.forEach(storeKey => {
     if (!history[storeKey] || history[storeKey].length === 0) return;
-    
+
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('x', legendX);
     rect.setAttribute('y', -15);
@@ -1399,7 +1404,7 @@ function generatePriceInsight(history, storeKeys, sortedDates, insightDiv) {
       const percentChange = ((priceChange / startPrice) * 100).toFixed(1);
 
       const storeLabel = STORES.find(s => s.key === store)?.label || store;
-      
+
       if (priceChange > 0) {
         insights.push(`✅ <strong>${storeLabel}</strong>: Price dropped by ${fmt(priceChange)} (${percentChange}%)`);
       } else if (priceChange < 0) {
@@ -1434,7 +1439,7 @@ function generatePriceInsight(history, storeKeys, sortedDates, insightDiv) {
 // ── Compare page ───────────────────────────────────────────────────────────
 function showComparePage(item) {
   console.log('📦 showComparePage called for:', item.title);
-  
+
   // Hide splash screen if it got stuck
   const splash = document.getElementById('splashScreen');
   if (splash) splash.classList.add('hidden');
@@ -1452,7 +1457,7 @@ function showComparePage(item) {
 
   // Build store comparison from THIS product's storeVariants (not global bestPerStore)
   var stores = [];
-  STORES.forEach(function(storeInfo) {
+  STORES.forEach(function (storeInfo) {
     var variant = item.storeVariants ? item.storeVariants[storeInfo.key] : null;
     if (variant && !variant.isSearchLink && variant.price > 0) {
       stores.push({
@@ -1483,13 +1488,13 @@ function showComparePage(item) {
   });
 
   // Sort: real prices first (cheapest), then search links
-  stores.sort(function(a, b) {
+  stores.sort(function (a, b) {
     if (a.isSearchLink && !b.isSearchLink) return 1;
     if (!a.isSearchLink && b.isSearchLink) return -1;
     return a.price - b.price;
   });
 
-  var realStores = stores.filter(function(s) { return !s.isSearchLink; });
+  var realStores = stores.filter(function (s) { return !s.isSearchLink; });
   var cheapest = realStores[0] || stores[0];
 
   // Populate Flipkart-style price section
@@ -1499,7 +1504,7 @@ function showComparePage(item) {
 
   if (!cheapest.isSearchLink) {
     var maxPrice = 0;
-    realStores.forEach(function(s) { if (s.price > maxPrice) maxPrice = s.price; });
+    realStores.forEach(function (s) { if (s.price > maxPrice) maxPrice = s.price; });
     var discountPct = maxPrice > cheapest.price ? Math.round(((maxPrice - cheapest.price) / maxPrice) * 100) : 0;
 
     if (bestPriceEl) bestPriceEl.textContent = fmt(cheapest.price);
@@ -1510,11 +1515,10 @@ function showComparePage(item) {
     if (mrpEl) mrpEl.textContent = '';
     if (discountEl) discountEl.textContent = '';
   }
-
   const compareSum = document.getElementById('compareSummary');
   if (compareSum) {
-    compareSum.innerHTML = 
-      cheapest.isSearchLink 
+    compareSum.innerHTML =
+      cheapest.isSearchLink
         ? 'Click any store link below to check live prices'
         : 'Lowest on <strong>' + cheapest.store.label + '</strong> — Free delivery available';
   }
@@ -1529,10 +1533,13 @@ function showComparePage(item) {
   }
 
   const imgEl = document.getElementById('compareProductImg');
-  const imgSrc = (productData && productData.specs && productData.specs.image) ? productData.specs.image : (item.thumbnail || '');
-  
+  let imgSrc = (item.specs && item.specs.image) ? item.specs.image : (item.thumbnail || '');
+
   if (imgEl) {
     if (imgSrc) {
+      if (imgSrc.startsWith('http') || imgSrc.startsWith('//')) {
+        imgSrc = `${API_URL}/api/image-proxy?url=${encodeURIComponent(imgSrc)}`;
+      }
       imgEl.src = imgSrc;
       imgEl.style.display = 'block';
     } else {
@@ -1549,52 +1556,48 @@ function showComparePage(item) {
       'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=200',
       'https://images.unsplash.com/photo-1556656793-062ff987b50d?w=200'
     ];
-    
-    gallery.innerHTML = thumbs.map(function(t, i) {
-      return '<div class="pdp-thumb' + (i===0?' active':'') + '" onclick="updatePdpImage(\'' + t + '\', this)">' +
-             '<img src="' + t + '" onerror="this.src=\'https://via.placeholder.com/60?text=Photo+' + (i+1) + '\'" />' +
-             '</div>';
+
+    gallery.innerHTML = thumbs.map(function (t, i) {
+      return '<div class="pdp-thumb' + (i === 0 ? ' active' : '') + '" onclick="updatePdpImage(\'' + t + '\', this)">' +
+        '<img src="' + t + '" onerror="this.src=\'https://via.placeholder.com/60?text=Photo+' + (i + 1) + '\'" />' +
+        '</div>';
     }).join('');
     gallery.style.display = 'flex';
   }
 
-  // ── Specs Table / Product Description
-  var specsWrap = document.getElementById('specsTableWrap');
+  // 5. Specs Table
+  const specsWrap = document.getElementById('specsTableWrap');
   if (specsWrap) {
-    if (productData && productData.specs && productData.specs.details) {
-      var specParts = productData.specs.details.split(' \u2022 ');
-      var specHtml = '<table style="width:100%;border-collapse:collapse;font-size:0.9rem;">';
-      specParts.forEach(function(part) {
-        var kv = part.split(': ');
+    const specIcons = { 'Display': '📱', 'CPU': '⚙️', 'RAM': '🧠', 'Storage': '💾', 'Camera': '📷', 'Rear Camera': '📷', 'Battery': '🔋', 'OS': '💻', 'GPU': '🎮', 'Weight': '⚖️' };
+    const specs = item.specs || (productData && productData.specs) || null;
+    
+    if (specs && specs.details) {
+      const specParts = specs.details.split(' • ');
+      let specHtml = '<ul>';
+      specParts.forEach(function (part) {
+        const kv = part.split(': ');
         if (kv.length >= 2) {
-          specHtml += '<tr style="border-bottom:1px solid var(--border-color,#e2e8f0);">' +
-            '<td style="padding:0.5rem 0.8rem;font-weight:700;color:var(--text-muted,#64748b);width:35%;">' + kv[0] + '</td>' +
-            '<td style="padding:0.5rem 0.8rem;color:var(--text-main,#1e293b);font-weight:600;">' + kv.slice(1).join(': ') + '</td></tr>';
+          const icon = specIcons[kv[0]] || '🔹';
+          specHtml += `<li><span class="pdp-highlight-icon">${icon}</span><div><strong>${kv[0]}</strong><br>${kv.slice(1).join(': ')}</div></li>`;
+        } else {
+          specHtml += `<li><span class="pdp-highlight-icon">🔹</span><div>${part}</div></li>`;
         }
       });
-      specHtml += '</table>';
+      specHtml += '</ul>';
       specsWrap.innerHTML = specHtml;
     } else {
-      // Generate description from product title
-      var descHtml = '<div style="font-size:0.95rem;color:var(--text-main,#1e293b);line-height:1.6;">' +
-        '<p><strong>Product:</strong> ' + item.title + '</p>';
-      if (realStores.length > 0) {
-        descHtml += '<p><strong>Available on:</strong> ' + realStores.map(function(s) { return s.store.label + ' at ' + fmt(s.price); }).join(', ') + '</p>';
-        descHtml += '<p><strong>Best deal:</strong> ' + cheapest.store.label + ' at ' + fmt(cheapest.price) + '</p>';
-      }
-      descHtml += '<p style="color:var(--text-muted,#64748b);font-size:0.85rem;margin-top:0.5rem;">Click on store links below to see full product details, specifications and reviews on the respective store website.</p></div>';
-      specsWrap.innerHTML = descHtml;
+      specsWrap.innerHTML = '<p style="color:var(--text-muted,#64748b);font-size:0.95rem;">High-performance product with premium features. Brand warranty included.</p>';
     }
   }
 
   // ── Buy at Lowest Price button
   var buyBtn = document.getElementById('buyLowestBtn');
   var buyBtn2 = document.getElementById('buyLowestBtn2');
-  
+
   if (buyBtn && cheapest) {
     buyBtn.href = cheapest.link || '#';
-    const priceText = (cheapest.isSearchLink || cheapest.price === 0 || cheapest.price === Infinity) 
-      ? 'SEARCH ON ' + cheapest.store.label.toUpperCase() 
+    const priceText = (cheapest.isSearchLink || cheapest.price === 0 || cheapest.price === Infinity)
+      ? 'SEARCH ON ' + cheapest.store.label.toUpperCase()
       : 'BUY NOW @ ' + fmt(cheapest.price);
     buyBtn.innerHTML = `<span>${priceText}</span>`;
     console.log('✅ Updated Buy Button:', priceText);
@@ -1627,20 +1630,24 @@ function showComparePage(item) {
   // ── Reviews Population
   var reviewsList = document.getElementById('pdpReviewsList');
   if (reviewsList) {
-    var mockReviews = [
-      { title: 'Excellent choice!', rating: 5, user: 'Rahul Sharma', text: `Amazing product. Bought it for ${fmt(cheapest.price)} and it is worth every penny.` },
-      { title: 'Great performance', rating: 4, user: 'Priya Patel', text: 'Fast delivery and good packaging. The product is working perfectly fine.' },
-      { title: 'Value for money', rating: 5, user: 'Amit K.', text: 'Best price found here on ShopIQ. Saved around 2000 rupees!' }
-    ];
-    reviewsList.innerHTML = mockReviews.map(r => `
-      <div class="review-item">
-        <div class="review-header">
-          <div class="review-rating">${r.rating} <i class="fas fa-star"></i></div>
-          <div class="review-title">${r.title}</div>
-        </div>
-        <div class="review-text">${r.text}</div>
-        <div class="review-user">${r.user} <i class="fas fa-check-circle"></i> Verified Purchase</div>
-      </div>`).join('');
+    const syntheticReviews = generateSyntheticReviews(item.title, item.rating || 4.5, 3);
+    reviewsList.innerHTML = syntheticReviews.map(rev => {
+      let stars = '';
+      for (let i = 0; i < rev.rating; i++) stars += '⭐';
+      return `
+        <div class="review-item">
+          <div class="review-header">
+            <div class="review-author">
+              <div class="review-author-avatar">${rev.initial}</div>
+              <span>${rev.author}</span>
+              <span class="review-store-badge">via ${rev.store}</span>
+            </div>
+            <div class="review-date">${rev.date}</div>
+          </div>
+          <div class="review-rating">${stars}</div>
+          <div class="review-text">${rev.text}</div>
+        </div>`;
+    }).join('');
   }
 
   // ── Price Insights
@@ -1649,10 +1656,10 @@ function showComparePage(item) {
     var minHistory = Infinity;
     if (productData && productData.priceHistory) {
       Object.values(productData.priceHistory).forEach(h => {
-        h.forEach(e => { if(e.price < minHistory) minHistory = e.price; });
+        h.forEach(e => { if (e.price < minHistory) minHistory = e.price; });
       });
     }
-    
+
     if (cheapest.price <= minHistory) {
       insight.innerHTML = '<i class="fas fa-chart-line"></i> Great Price! This is the lowest recorded price for this product.';
     } else {
@@ -1667,12 +1674,12 @@ function showComparePage(item) {
     if (realStores.length > 0) {
       var minP = realStores[0].price;
       var maxP = realStores[realStores.length - 1].price;
-      var scale = function(v) { return 30 + ((v - minP) / Math.max(1, maxP - minP)) * 60; };
+      var scale = function (v) { return 30 + ((v - minP) / Math.max(1, maxP - minP)) * 60; };
 
       var cHtml = '<div style="margin-bottom:.6rem;font-size:.9rem;font-weight:700;color:var(--text-main,#111827);">' +
         'Price comparison across stores</div>';
 
-      realStores.forEach(function(s) {
+      realStores.forEach(function (s) {
         var w = Math.max(30, scale(s.price));
         var isBest = s.price === minP;
         cHtml += '<div class="chart-bar">' +
@@ -1683,7 +1690,7 @@ function showComparePage(item) {
 
       pcc.innerHTML = cHtml;
     } else {
-      pcc.innerHTML = 
+      pcc.innerHTML =
         '<p style="color:var(--text-muted,#64748b);font-size:0.9rem;">Price comparison not available. Click store links to check live prices.</p>';
     }
   }
@@ -1692,25 +1699,25 @@ function showComparePage(item) {
   var slc = document.getElementById('storeLinksCompare');
   if (slc) {
     var slcHtml = '';
-    stores.forEach(function(s, idx) {
+    stores.forEach(function (s, idx) {
       var isBest = !s.isSearchLink && realStores.length > 0 && s.price === realStores[0].price;
       var priceLabel = s.isSearchLink ? 'Check Price' : fmt(s.price);
       var rowBg = isBest ? '#f0fdf4' : '#fff';
       var rowBorder = isBest ? '2px solid #22c55e' : '1px solid #f1f5f9';
-      
+
       slcHtml += '<a href="' + s.link + '" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;background:' + rowBg + ';border:' + rowBorder + ';border-radius:10px;text-decoration:none;transition:box-shadow .15s,transform .15s;"' +
         ' onmouseover="this.style.boxShadow=\'0 4px 16px rgba(0,0,0,.1)\';this.style.transform=\'translateY(-1px)\'"' +
         ' onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'none\'">' +
         '<img src="' + s.store.logo + '" alt="' + s.store.label + '" style="width:32px;height:32px;object-fit:contain;border-radius:6px;border:1px solid #e2e8f0;padding:2px;" onerror="this.style.display=\'none\'" />' +
         '<div style="flex:1;">' +
-          '<div style="font-weight:700;color:#212121;font-size:.9rem;">' + s.store.label + (isBest ? ' <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:.7rem;margin-left:6px;">BEST PRICE</span>' : '') + '</div>' +
-          '<div style="font-size:.75rem;color:#878787;">' + (s.isSearchLink ? 'Click to check availability' : 'In stock • Free delivery') + '</div>' +
+        '<div style="font-weight:700;color:#212121;font-size:.9rem;">' + s.store.label + (isBest ? ' <span style="background:#22c55e;color:#fff;padding:1px 6px;border-radius:4px;font-size:.7rem;margin-left:6px;">BEST PRICE</span>' : '') + '</div>' +
+        '<div style="font-size:.75rem;color:#878787;">' + (s.isSearchLink ? 'Click to check availability' : 'In stock • Free delivery') + '</div>' +
         '</div>' +
         '<div style="text-align:right;">' +
-          '<div style="font-weight:800;color:' + (isBest ? '#16a34a' : '#212121') + ';font-size:1.05rem;">' + priceLabel + '</div>' +
+        '<div style="font-weight:800;color:' + (isBest ? '#16a34a' : '#212121') + ';font-size:1.05rem;">' + priceLabel + '</div>' +
         '</div>' +
         '<span style="background:' + s.store.barColor + ';color:#fff;padding:.35rem .7rem;border-radius:8px;font-size:.75rem;font-weight:700;white-space:nowrap;">GO →</span>' +
-      '</a>';
+        '</a>';
     });
     slc.innerHTML = slcHtml;
   }
@@ -1740,13 +1747,13 @@ function goBackView() {
   const searchPage = document.getElementById('searchPage');
   const wishlistPage = document.getElementById('wishlistPage');
   const cartPage = document.getElementById('cartPage');
-  
+
   if (comparePage && comparePage.style.display !== 'none') {
     comparePage.style.display = 'none';
     searchPage.style.display = 'block';
     return;
   }
-  
+
   if (wishlistPage && wishlistPage.style.display !== 'none') {
     wishlistPage.style.display = 'none';
     showHomePage();
@@ -1758,7 +1765,7 @@ function goBackView() {
     showHomePage();
     return;
   }
-  
+
   showHomePage();
 }
 
@@ -1773,9 +1780,9 @@ if (backButton) {
 // ── Event listeners ────────────────────────────────────────────────────────
 async function triggerSearch() {
   const q = searchInput.value.trim();
-  if (!q) { 
+  if (!q) {
     showHomePage();
-    return; 
+    return;
   }
   showResultsPage();
 
@@ -1784,7 +1791,7 @@ async function triggerSearch() {
     const urlObj = new URL(q);
     if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
       showLoading('Parsing link to find product...');
-      
+
       const extRes = await fetch(`${PROXY_URL}/extract?url=${encodeURIComponent(q)}`);
       if (extRes.ok) {
         const data = await extRes.json();
@@ -1792,12 +1799,12 @@ async function triggerSearch() {
         if (title) {
           // Clean typical store suffixes from titles
           title = title.split('|')[0]   // e.g. "Product | Amazon"
-                       .split(':')[0]   // e.g. "Product : Flipkart"
-                       .split('-')[0]   // e.g. "Product - Buy Online"
-                       .replace(/buy/i, '')
-                       .replace(/online/i, '')
-                       .trim();
-          
+            .split(':')[0]   // e.g. "Product : Flipkart"
+            .split('-')[0]   // e.g. "Product - Buy Online"
+            .replace(/buy/i, '')
+            .replace(/online/i, '')
+            .trim();
+
           searchInput.value = title;
           fetchPrices(title);
           return;
@@ -1915,7 +1922,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.success && data.title) {
           extractStatus.textContent = `✅ Found: ${data.title}. Searching...`;
           extractStatus.style.color = '#10b981';
-          
+
           // Trigger search with the extracted title
           setTimeout(() => {
             searchInput.value = data.title;
@@ -1968,7 +1975,7 @@ function buildStorefrontRow(title, items) {
   let html = '<div class="storefront-row-title">' + title +
     '<span class="view-all-link" onclick="fetchCategory(\'' + catKey + '\')">View All &gt;</span></div>' +
     '<div class="horizontal-scroll-container">';
-  
+
   items.slice(0, 10).forEach(item => {
     const storePrices = [item.amazon, item.flipkart, item.reliance, item.croma, item.tatacliq].filter(p => p && p > 0);
     const minPrice = storePrices.length > 0 ? Math.min(...storePrices) : (item.price || 0);
@@ -1976,8 +1983,8 @@ function buildStorefrontRow(title, items) {
     const emoji = getBrandEmoji(item.brand);
     const gradient = getBrandGradient(item.brand);
     const safeBrand = item.brand.replace(/'/g, '');
-    
-    html += '<div class="storefront-product-card" onclick="fetchCategory(\'' + safeBrand + '\')">' +
+
+    html += '<div class="storefront-product-card" onclick="searchQuery(\'' + safeBrand + '\')">' +
       '<div class="storefront-card-img" style="background: ' + gradient + ';">' +
       '<span class="storefront-card-emoji">' + emoji + '</span></div>' +
       '<div class="storefront-card-body">' +
@@ -1985,7 +1992,7 @@ function buildStorefrontRow(title, items) {
       '<div class="storefront-card-price">From ' + priceStr + '</div>' +
       '</div></div>';
   });
-  
+
   html += '</div>';
   return html;
 }
@@ -1993,7 +2000,7 @@ function buildStorefrontRow(title, items) {
 // Initial load
 document.addEventListener('DOMContentLoaded', () => {
   loadState();
-  
+
   // Handle Routing via Hash
   const hash = window.location.hash;
   if (hash === '#wishlist') {
@@ -2035,12 +2042,12 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * Global search helper for category navigation
  */
-window.searchQuery = function(q) {
+window.searchQuery = function (q) {
   const input = document.getElementById('searchInput');
   const catFilter = document.getElementById('categoryFilter');
-  
+
   if (input) input.value = q;
-  
+
   if (catFilter) {
     const val = q.toLowerCase();
     // Map 'Television' or 'TVs' to 'television'
@@ -2052,7 +2059,7 @@ window.searchQuery = function(q) {
       catFilter.value = 'all';
     }
   }
-  
+
   // Trigger search logic directly
   if (typeof triggerSearch === 'function') {
     triggerSearch();
@@ -2066,7 +2073,60 @@ window.searchQuery = function(q) {
 function updatePdpImage(src, thumb) {
   const mainImg = document.getElementById('compareProductImg');
   if (mainImg) mainImg.src = src;
-  
+
   document.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('active'));
   if (thumb) thumb.classList.add('active');
+}
+
+// -- Synthetic Data Helpers -----------------------------------------------
+function generateSyntheticHistory(item) {
+  const history = {};
+  const now = new Date();
+  STORES.forEach(store => {
+    const prices = [];
+    const basePrice = item.price || 50000;
+    for (let i = 4; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(now.getDate() - (i * 15));
+      const variation = (Math.random() * 0.1) - 0.05; // -5% to +5%
+      prices.push({
+        date: date.toISOString().split('T')[0],
+        price: Math.round(basePrice * (1 + variation))
+      });
+    }
+    history[store.key] = prices;
+  });
+  return history;
+}
+
+function generateSyntheticReviews(title, baseRating, count) {
+  const reviews = [];
+  const authors = [
+    { name: 'Aarav Sharma', initial: 'A' },
+    { name: 'Priya Patel', initial: 'P' },
+    { name: 'Rahul Kumar', initial: 'R' },
+    { name: 'Sanya Gupta', initial: 'S' },
+    { name: 'Vikram Singh', initial: 'V' }
+  ];
+  const templates = [
+    'Excellent product, highly recommended!',
+    'Good value for money. The performance is top-notch.',
+    'Very happy with the purchase. Fast delivery too.',
+    'Great features and sleek design. Five stars!',
+    'Worth every penny. The build quality is amazing.'
+  ];
+  const stores = ['Amazon', 'Flipkart', 'Croma', 'Reliance Digital'];
+
+  for (let i = 0; i < count; i++) {
+    const author = authors[i % authors.length];
+    reviews.push({
+      author: author.name,
+      initial: author.initial,
+      rating: Math.floor(baseRating) + (Math.random() > 0.5 ? 0 : -1),
+      date: '2024-04-' + (10 + i),
+      text: templates[i % templates.length],
+      store: stores[i % stores.length]
+    });
+  }
+  return reviews;
 }

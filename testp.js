@@ -1239,9 +1239,9 @@ function renderPriceHistory(productData, selectedItem) {
   const storeColors = {
     amazon: '#FF9900',
     flipkart: '#2874F0',
-    croma: '#00E9BF',
+    croma: '#00B5B5',
     reliance: '#E4252A',
-    tatacliq: '#D0021B'
+    tatacliq: '#8B5CF6'
   };
 
 
@@ -1282,25 +1282,37 @@ function renderPriceHistory(productData, selectedItem) {
       circle.setAttribute('stroke-width', '2');
       circle.setAttribute('class', 'history-point');
 
-      // Add hover tooltip
+      // Add click-to-show details
       circle.style.cursor = 'pointer';
-      circle.addEventListener('mouseover', () => {
-        circle.setAttribute('r', '6');
-        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        label.setAttribute('x', point.x);
-        label.setAttribute('y', point.y - 15);
-        label.setAttribute('text-anchor', 'middle');
-        label.setAttribute('font-size', '12');
-        label.setAttribute('fill', storeColors[storeKey] || '#2563eb');
-        label.setAttribute('font-weight', '600');
-        label.textContent = fmt(point.price);
-        label.setAttribute('class', 'history-label');
-        g.appendChild(label);
-      });
-      circle.addEventListener('mouseout', () => {
-        circle.setAttribute('r', '4');
-        const labels = g.querySelectorAll('.history-label');
-        labels.forEach(l => l.remove());
+      circle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Toggle behavior
+        const existingLabel = g.querySelector('.history-label');
+        const isCurrentPoint = existingLabel && existingLabel.getAttribute('data-point-id') === `${storeKey}-${idx}`;
+        
+        // Clear all previous labels and reset all circles
+        g.querySelectorAll('.history-label').forEach(l => l.remove());
+        g.querySelectorAll('.history-point').forEach(p => p.setAttribute('r', '4'));
+
+        if (!isCurrentPoint) {
+          circle.setAttribute('r', '7');
+          const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          label.setAttribute('x', point.x);
+          label.setAttribute('y', point.y - 18);
+          label.setAttribute('text-anchor', 'middle');
+          label.setAttribute('font-size', '13');
+          label.setAttribute('fill', storeColors[storeKey] || '#2563eb');
+          label.setAttribute('font-weight', '700');
+          label.setAttribute('class', 'history-label');
+          label.setAttribute('data-point-id', `${storeKey}-${idx}`);
+          
+          const d = new Date(point.date);
+          const dateFormatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+          label.textContent = fmt(point.price) + ' (' + dateFormatted + ')';
+          
+          g.appendChild(label);
+        }
       });
 
       g.appendChild(circle);
@@ -1384,6 +1396,14 @@ function renderPriceHistory(productData, selectedItem) {
 
   svg.appendChild(g);
   historyCard.style.display = 'block';
+
+  // Clear labels when clicking empty space in SVG
+  svg.addEventListener('click', (e) => {
+    if (e.target.tagName === 'svg' || e.target.tagName === 'g' || e.target.tagName === 'line') {
+      g.querySelectorAll('.history-label').forEach(l => l.remove());
+      g.querySelectorAll('.history-point').forEach(p => p.setAttribute('r', '4'));
+    }
+  });
 
   // Generate insights
   generatePriceInsight(history, storeKeys, sortedDates, insightDiv);

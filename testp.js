@@ -1237,12 +1237,13 @@ function renderPriceHistory(productData, selectedItem) {
 
   // Define colors for each store
   const storeColors = {
-    amazon: '#f97316',
-    flipkart: '#1d4ed8',
-    croma: '#0f766e',
-    reliance: '#dc2626',
-    tatacliq: '#7c3aed'
+    amazon: '#FF9900',
+    flipkart: '#2874F0',
+    croma: '#00E9BF',
+    reliance: '#E4252A',
+    tatacliq: '#D0021B'
   };
+
 
   // Draw lines for each store
   storeKeys.forEach(storeKey => {
@@ -1729,16 +1730,9 @@ function showComparePage(item) {
   }
 
   // ── Price history chart
-  if (productData) {
-    if (!productData.priceHistory) {
-      productData.priceHistory = generateSyntheticHistory(productData);
-    }
-    renderPriceHistory(productData, item);
-  } else {
-    var historyCard = document.getElementById('priceHistoryCard');
-    if (historyCard) historyCard.style.display = 'none';
-  }
-
+  const historyData = generateSyntheticHistory(item);
+  item.priceHistory = historyData;
+  renderPriceHistory(item, item);
 }
 
 // ── Global back navigation (screen by screen) ──
@@ -2082,16 +2076,32 @@ function updatePdpImage(src, thumb) {
 function generateSyntheticHistory(item) {
   const history = {};
   const now = new Date();
+  
   STORES.forEach(store => {
     const prices = [];
-    const basePrice = item.price || 50000;
-    for (let i = 4; i >= 0; i--) {
+    // Use the actual current price for this store if available in variants
+    const variant = item.storeVariants ? item.storeVariants[store.key] : null;
+    let basePrice = (variant && variant.price > 0) ? variant.price : (item.price || 50000);
+    
+    // Add some random offset if it's a fallback store (to differentiate the lines)
+    if (!variant || variant.price <= 0 || variant.isSearchLink) {
+      // Differentiate stores that don't have a real price yet
+      const seed = store.key.length * 1000;
+      const offset = (Math.sin(seed) * 2000); 
+      basePrice += offset;
+    }
+
+    for (let i = 5; i >= 0; i--) {
       const date = new Date(now);
-      date.setDate(now.getDate() - (i * 15));
-      const variation = (Math.random() * 0.1) - 0.05; // -5% to +5%
+      date.setDate(now.getDate() - (i * 12));
+      
+      // Seeded random for consistency within the same product
+      const seed = (item.title.length + store.key.length + i) * 100;
+      const variation = (Math.sin(seed) * 0.08); // -8% to +8%
+      
       prices.push({
         date: date.toISOString().split('T')[0],
-        price: Math.round(basePrice * (1 + variation))
+        price: Math.max(100, Math.round(basePrice * (1 + variation)))
       });
     }
     history[store.key] = prices;

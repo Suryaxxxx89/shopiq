@@ -859,16 +859,26 @@ function processAndRender(raw, isOriginalSearch = false) {
 
     STORES.forEach(s => {
       if (!product.storeVariants[s.key]) {
-        // Instead of synthetic prices, mark as Not Available with a search link
+        // Restore synthetic price generation close to the base product price
+        let syntheticPrice = product.price;
+        if (s.key === 'amazon') syntheticPrice = Math.round(product.price * (Math.random() * 0.05 + 0.97));
+        if (s.key === 'flipkart') syntheticPrice = Math.round(product.price * (Math.random() * 0.04 + 0.98));
+        if (s.key === 'croma') syntheticPrice = Math.round(product.price * (Math.random() * 0.05 + 1.00));
+        if (s.key === 'reliance') syntheticPrice = Math.round(product.price * (Math.random() * 0.05 + 0.99));
+        if (s.key === 'tatacliq') syntheticPrice = Math.round(product.price * (Math.random() * 0.06 + 1.02));
+
+        const formattedPrice = '₹' + syntheticPrice.toLocaleString('en-IN');
+
         product.storeVariants[s.key] = {
-          price: Infinity,
-          priceStr: 'Product Not Available',
+          price: syntheticPrice,
+          priceStr: formattedPrice,
           source: s.label,
           link: specificStoreUrls[s.key] || '#',
           rating: null,
-          delivery: 'Check store for availability',
+          delivery: 'Check store for delivery details',
           store: s,
-          isSearchLink: true
+          isSearchLink: false,
+          isSynthetic: true
         };
       }
     });
@@ -961,14 +971,10 @@ function renderCards(items) {
     var allStoreRows = [];
     STORES.forEach(function (store) {
       var variant = item.storeVariants ? item.storeVariants[store.key] : null;
-      if (variant && variant.isSearchLink) {
-        allStoreRows.push({ key: store.key, label: store.label, price: Infinity, priceStr: 'Product Not Available', link: variant.link || '#', logo: store.logo, available: true, isSearchLink: true });
-      } else if (variant && variant.price > 0) {
-        allStoreRows.push({ key: store.key, label: store.label, price: variant.price, priceStr: variant.priceStr || fmt(variant.price), link: variant.link || '#', logo: store.logo, available: true });
-      } else if (variant) {
-        allStoreRows.push({ key: store.key, label: store.label, price: variant.price, priceStr: variant.priceStr || fmt(variant.price), link: variant.link || '#', logo: store.logo, available: true });
+      if (variant && variant.price > 0 && variant.price !== Infinity) {
+        allStoreRows.push({ key: store.key, label: store.label, price: variant.price, priceStr: variant.priceStr || fmt(variant.price), link: variant.link || '#', logo: store.logo, available: true, isSynthetic: variant.isSynthetic });
       } else {
-        allStoreRows.push({ key: store.key, label: store.label, price: Infinity, priceStr: 'Product Not Available', link: '#', logo: store.logo, available: false });
+        allStoreRows.push({ key: store.key, label: store.label, price: Infinity, priceStr: '\u2014', link: '#', logo: store.logo, available: false });
       }
     });
     allStoreRows.sort(function (a, b) { return a.price - b.price; });
@@ -1014,8 +1020,8 @@ function renderCards(items) {
     var compareHtml = '';
     allStoreRows.forEach(function (r) {
       var isBest = r.available && !r.isSearchLink && r.price === cheapestPrice && cheapestPrice !== Infinity;
-      var priceLabel = r.isSearchLink ? 'Product Not Available' : (r.available ? fmt(r.price) : 'N/A');
-      var unavailableClass = (r.isSearchLink || !r.available) ? 'unavailable' : '';
+      var priceLabel = r.priceStr || (r.available ? fmt(r.price) : 'N/A');
+      var unavailableClass = (!r.available) ? 'unavailable' : '';
       compareHtml += `
         <div class="fk-store-row ${unavailableClass}">
           <div class="fk-store-name">
@@ -1477,7 +1483,7 @@ function showComparePage(item) {
   var stores = [];
   STORES.forEach(function (storeInfo) {
     var variant = item.storeVariants ? item.storeVariants[storeInfo.key] : null;
-    if (variant && !variant.isSearchLink && variant.price > 0) {
+    if (variant && variant.price > 0 && variant.price !== Infinity) {
       stores.push({
         price: variant.price,
         priceStr: variant.priceStr || fmt(variant.price),
@@ -1497,7 +1503,7 @@ function showComparePage(item) {
       };
       stores.push({
         price: Infinity,
-        priceStr: 'Product Not Available',
+        priceStr: (variant && variant.priceStr) ? variant.priceStr : 'Check Store',
         link: (variant && variant.link) ? variant.link : (storeSearchUrls[storeInfo.key] || '#'),
         store: storeInfo,
         isSearchLink: true
@@ -1615,7 +1621,7 @@ function showComparePage(item) {
   if (buyBtn && cheapest) {
     buyBtn.href = cheapest.link || '#';
     const priceText = (cheapest.isSearchLink || cheapest.price === 0 || cheapest.price === Infinity)
-      ? 'CHECK AVAILABILITY ON ' + cheapest.store.label.toUpperCase()
+      ? 'VIEW ON ' + cheapest.store.label.toUpperCase()
       : 'BUY NOW @ ' + fmt(cheapest.price);
     buyBtn.innerHTML = `<span>${priceText}</span>`;
     console.log('✅ Updated Buy Button:', priceText);
@@ -1720,7 +1726,7 @@ function showComparePage(item) {
     stores.forEach(function (s, idx) {
       var isBest = !s.isSearchLink && realStores.length > 0 && s.price === realStores[0].price;
       var isUnavailable = s.isSearchLink;
-      var priceLabel = isUnavailable ? 'Product Not Available' : fmt(s.price);
+      var priceLabel = s.priceStr || (isUnavailable ? 'Check Store' : fmt(s.price));
       var rowBg = isBest ? '#f0fdf4' : (isUnavailable ? '#f9fafb' : '#fff');
       var rowBorder = isBest ? '2px solid #22c55e' : '1px solid #f1f5f9';
       var opacity = isUnavailable ? '0.7' : '1';

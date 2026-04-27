@@ -102,6 +102,7 @@ let currentResults = [];   // all filtered results (sorted)
 let bestPerStore = {};   // cheapest item per store key
 let searchDebounce = null;
 let rawSerpResults = []; // cache raw search results for local filtering
+let originalSerpResults = []; // original pool from server
 let productDataMap = {}; // Map to store original product data with price history
 let wishlist = [];       // Wishlist items
 let cart = [];           // Cart items
@@ -585,7 +586,7 @@ async function fetchPrices(rawQuery) {
       console.log(`Fetching from: ${API_URL}/api/search?q=${encodeURIComponent(rawQuery)}`);
       const response = await Promise.race([
         fetch(`${API_URL}/api/search?q=${encodeURIComponent(rawQuery)}`),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout after 8s')), 8000))
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout after 15s')), 15000))
       ]);
 
       if (response.ok) {
@@ -618,7 +619,7 @@ async function fetchPrices(rawQuery) {
             productDataMap[product.title] = product;
           });
 
-          processAndRender(shopping_results);
+          processAndRender(shopping_results, true);
           console.log('✅ Successfully rendered live data from backend server');
           return;
         } else {
@@ -709,7 +710,7 @@ async function fetchPrices(rawQuery) {
       productDataMap[product.brand] = product;
     });
 
-    processAndRender(shopping_results);
+    processAndRender(shopping_results, true);
     console.log(`✅ Rendered ${shopping_results.length} results from fallback data (${filteredProducts.length} unique products across multiple stores)`);
 
   } catch (error) {
@@ -719,8 +720,11 @@ async function fetchPrices(rawQuery) {
 }
 
 // ── Process results ────────────────────────────────────────────────────────
-function processAndRender(raw) {
-  rawSerpResults = raw; // save raw results to avoid network call when filtering stores
+function processAndRender(raw, isOriginalSearch = false) {
+  if (isOriginalSearch) {
+    originalSerpResults = raw;
+  }
+  rawSerpResults = raw; // current working set
 
   const activeStores = Array.from(storeCheckboxes)
     .filter(cb => cb.checked)
@@ -855,35 +859,17 @@ function processAndRender(raw) {
 
     STORES.forEach(s => {
       if (!product.storeVariants[s.key]) {
-        // Generate a synthetic price close to the base product price for missing stores
-        let syntheticPrice = product.price;
-        if (s.key === 'flipkart') syntheticPrice = Math.round(product.price * (Math.random() * 0.04 + 0.98)); // 0.98 to 1.02
-        if (s.key === 'croma') syntheticPrice = Math.round(product.price * (Math.random() * 0.05 + 1.00)); // 1.00 to 1.05
-        if (s.key === 'reliance') syntheticPrice = Math.round(product.price * (Math.random() * 0.05 + 0.99)); // 0.99 to 1.04
-        if (s.key === 'tatacliq') syntheticPrice = Math.round(product.price * (Math.random() * 0.06 + 1.02)); // 1.02 to 1.08
-
-        // Ensure price formatting
-        const formattedPrice = '₹' + syntheticPrice.toLocaleString('en-IN');
-
+        // Instead of synthetic prices, mark as Not Available with a search link
         product.storeVariants[s.key] = {
-          price: syntheticPrice,
-          priceStr: formattedPrice,
+          price: Infinity,
+          priceStr: 'Product Not Available',
           source: s.label,
           link: specificStoreUrls[s.key] || '#',
           rating: null,
-          delivery: 'Check store for delivery details',
+          delivery: 'Check store for availability',
           store: s,
-          isSearchLink: false
+          isSearchLink: true
         };
-
-        // Update main entry to show cheapest option if this synthetic price is lower
-        if (syntheticPrice < product.price) {
-          product.price = syntheticPrice;
-          product.priceStr = formattedPrice;
-          product.source = s.label;
-          product.store = s;
-          product.link = specificStoreUrls[s.key] || '#';
-        }
       }
     });
   });
@@ -976,13 +962,13 @@ function renderCards(items) {
     STORES.forEach(function (store) {
       var variant = item.storeVariants ? item.storeVariants[store.key] : null;
       if (variant && variant.isSearchLink) {
-        allStoreRows.push({ key: store.key, label: store.label, price: Infinity, priceStr: 'View on Store →', link: variant.link || '#', logo: store.logo, available: true, isSearchLink: true });
+        allStoreRows.push({ key: store.key, label: store.label, price: Infinity, priceStr: 'Product Not Available', link: variant.link || '#', logo: store.logo, available: true, isSearchLink: true });
       } else if (variant && variant.price > 0) {
         allStoreRows.push({ key: store.key, label: store.label, price: variant.price, priceStr: variant.priceStr || fmt(variant.price), link: variant.link || '#', logo: store.logo, available: true });
       } else if (variant) {
         allStoreRows.push({ key: store.key, label: store.label, price: variant.price, priceStr: variant.priceStr || fmt(variant.price), link: variant.link || '#', logo: store.logo, available: true });
       } else {
-        allStoreRows.push({ key: store.key, label: store.label, price: Infinity, priceStr: '\u2014', link: '#', logo: store.logo, available: false });
+        allStoreRows.push({ key: store.key, label: store.label, price: Infinity, priceStr: 'Product Not Available', link: '#', logo: store.logo, available: false });
       }
     });
     allStoreRows.sort(function (a, b) { return a.price - b.price; });
@@ -1028,9 +1014,10 @@ function renderCards(items) {
     var compareHtml = '';
     allStoreRows.forEach(function (r) {
       var isBest = r.available && !r.isSearchLink && r.price === cheapestPrice && cheapestPrice !== Infinity;
-      var priceLabel = r.isSearchLink ? 'View' : (r.available ? fmt(r.price) : 'N/A');
+      var priceLabel = r.isSearchLink ? 'Product Not Available' : (r.available ? fmt(r.price) : 'N/A');
+      var unavailableClass = (r.isSearchLink || !r.available) ? 'unavailable' : '';
       compareHtml += `
-        <div class="fk-store-row">
+        <div class="fk-store-row ${unavailableClass}">
           <div class="fk-store-name">
             <img src="${r.logo}" class="fk-store-logo" onerror="this.style.visibility='hidden'">
             <span>${r.label}</span>
@@ -1500,7 +1487,7 @@ function showComparePage(item) {
       };
       stores.push({
         price: Infinity,
-        priceStr: 'View on Store →',
+        priceStr: 'Product Not Available',
         link: (variant && variant.link) ? variant.link : (storeSearchUrls[storeInfo.key] || '#'),
         store: storeInfo,
         isSearchLink: true
@@ -1618,7 +1605,7 @@ function showComparePage(item) {
   if (buyBtn && cheapest) {
     buyBtn.href = cheapest.link || '#';
     const priceText = (cheapest.isSearchLink || cheapest.price === 0 || cheapest.price === Infinity)
-      ? 'SEARCH ON ' + cheapest.store.label.toUpperCase()
+      ? 'CHECK AVAILABILITY ON ' + cheapest.store.label.toUpperCase()
       : 'BUY NOW @ ' + fmt(cheapest.price);
     buyBtn.innerHTML = `<span>${priceText}</span>`;
     console.log('✅ Updated Buy Button:', priceText);
@@ -1722,11 +1709,13 @@ function showComparePage(item) {
     var slcHtml = '';
     stores.forEach(function (s, idx) {
       var isBest = !s.isSearchLink && realStores.length > 0 && s.price === realStores[0].price;
-      var priceLabel = s.isSearchLink ? 'Check Price' : fmt(s.price);
-      var rowBg = isBest ? '#f0fdf4' : '#fff';
+      var isUnavailable = s.isSearchLink;
+      var priceLabel = isUnavailable ? 'Product Not Available' : fmt(s.price);
+      var rowBg = isBest ? '#f0fdf4' : (isUnavailable ? '#f9fafb' : '#fff');
       var rowBorder = isBest ? '2px solid #22c55e' : '1px solid #f1f5f9';
+      var opacity = isUnavailable ? '0.7' : '1';
 
-      slcHtml += '<a href="' + s.link + '" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;background:' + rowBg + ';border:' + rowBorder + ';border-radius:10px;text-decoration:none;transition:box-shadow .15s,transform .15s;"' +
+      slcHtml += '<a href="' + s.link + '" target="_blank" rel="noopener noreferrer" class="store-row-item ' + (isUnavailable ? 'unavailable' : '') + '" style="display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;background:' + rowBg + ';border:' + rowBorder + ';border-radius:10px;text-decoration:none;transition:box-shadow .15s,transform .15s;opacity:' + opacity + ';"' +
         ' onmouseover="this.style.boxShadow=\'0 4px 16px rgba(0,0,0,.1)\';this.style.transform=\'translateY(-1px)\'"' +
         ' onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'none\'">' +
         '<img src="' + s.store.logo + '" alt="' + s.store.label + '" style="width:32px;height:32px;object-fit:contain;border-radius:6px;border:1px solid #e2e8f0;padding:2px;" onerror="this.style.display=\'none\'" />' +
@@ -2160,3 +2149,170 @@ function generateSyntheticReviews(title, baseRating, count) {
   }
   return reviews;
 }
+
+// ── Sidebar Filter Logic ───────────────────────────────────────────────────
+
+function toggleFilterSection(sectionId) {
+  const section = document.getElementById('section-' + sectionId);
+  if (section) {
+    section.classList.toggle('collapsed');
+  }
+}
+
+function handlePriceSlider() {
+  const min = document.getElementById('priceRangeMin');
+  const max = document.getElementById('priceRangeMax');
+  const minVal = parseInt(min.value);
+  const maxVal = parseInt(max.value);
+
+  if (minVal > maxVal) {
+    // Sync min if it passed max
+    if (event.target.id === 'priceRangeMin') min.value = maxVal;
+    else max.value = minVal;
+  }
+  
+  document.getElementById('minPriceInput').value = min.value;
+  document.getElementById('maxPriceInput').value = max.value;
+  updatePriceTrack();
+  applyFilters();
+}
+
+function syncPriceSlider() {
+  const minIn = document.getElementById('minPriceInput');
+  const maxIn = document.getElementById('maxPriceInput');
+  const minRange = document.getElementById('priceRangeMin');
+  const maxRange = document.getElementById('priceRangeMax');
+  
+  minRange.value = minIn.value;
+  maxRange.value = maxIn.value;
+  
+  updatePriceTrack();
+  applyFilters();
+}
+
+function updatePriceTrack() {
+  const min = document.getElementById('priceRangeMin');
+  const max = document.getElementById('priceRangeMax');
+  const track = document.getElementById('priceTrack');
+  if (!min || !max || !track) return;
+  
+  const minP = (min.value / min.max) * 100;
+  const maxP = (max.value / max.max) * 100;
+  track.style.setProperty('--range-min', minP + '%');
+  track.style.setProperty('--range-max', (100 - maxP) + '%');
+}
+
+function handleDiscountSlider() {
+  const min = document.getElementById('discountRangeMin');
+  const max = document.getElementById('discountRangeMax');
+  const minVal = parseInt(min.value);
+  const maxVal = parseInt(max.value);
+
+  if (minVal > maxVal) {
+    if (event.target.id === 'discountRangeMin') min.value = maxVal;
+    else max.value = minVal;
+  }
+  
+  document.getElementById('minDiscountInput').value = min.value;
+  document.getElementById('maxDiscountInput').value = max.value;
+  updateDiscountTrack();
+  applyFilters();
+}
+
+function syncDiscountSlider() {
+  const minIn = document.getElementById('minDiscountInput');
+  const maxIn = document.getElementById('maxDiscountInput');
+  const minRange = document.getElementById('discountRangeMin');
+  const maxRange = document.getElementById('discountRangeMax');
+  
+  minRange.value = minIn.value;
+  maxRange.value = maxIn.value;
+  
+  updateDiscountTrack();
+  applyFilters();
+}
+
+function updateDiscountTrack() {
+  const min = document.getElementById('discountRangeMin');
+  const max = document.getElementById('discountRangeMax');
+  const track = document.getElementById('discountTrack');
+  if (!min || !max || !track) return;
+  
+  const minP = (min.value / min.max) * 100;
+  const maxP = (max.value / max.max) * 100;
+  track.style.setProperty('--range-min', minP + '%');
+  track.style.setProperty('--range-max', (100 - maxP) + '%');
+}
+
+function handleSidebarSearch() {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(applyFilters, 300);
+}
+
+function clearAllFilters() {
+  document.getElementById('sidebarSearch').value = '';
+  document.getElementById('minPriceInput').value = 0;
+  document.getElementById('maxPriceInput').value = 100000;
+  document.getElementById('minDiscountInput').value = 0;
+  document.getElementById('maxDiscountInput').value = 100;
+  document.getElementById('categoryFilter').value = 'all';
+  
+  // Reset sliders
+  document.getElementById('priceRangeMin').value = 0;
+  document.getElementById('priceRangeMax').value = 100000;
+  document.getElementById('discountRangeMin').value = 0;
+  document.getElementById('discountRangeMax').value = 100;
+  
+  // Reset checkboxes
+  const cbs = document.querySelectorAll('#storeFilters input[type="checkbox"]');
+  cbs.forEach(cb => cb.checked = true);
+  
+  updatePriceTrack();
+  updateDiscountTrack();
+  applyFilters();
+}
+
+function applyFilters() {
+  if (!originalSerpResults || originalSerpResults.length === 0) return;
+  
+  const sidebarQuery = document.getElementById('sidebarSearch').value.toLowerCase().trim();
+  const minPrice = parseInt(document.getElementById('minPriceInput').value) || 0;
+  const maxPrice = parseInt(document.getElementById('maxPriceInput').value) || 1000000;
+  const minDisc = parseInt(document.getElementById('minDiscountInput').value) || 0;
+  const maxDisc = parseInt(document.getElementById('maxDiscountInput').value) || 100;
+  const catFilterValue = document.getElementById('categoryFilter').value;
+  
+  const filtered = originalSerpResults.filter(item => {
+    // Sidebar search
+    if (sidebarQuery && !item.title.toLowerCase().includes(sidebarQuery)) return false;
+    
+    // Price
+    if (item.extracted_price < minPrice || item.extracted_price > maxPrice) return false;
+    
+    // Category (if not 'all')
+    if (catFilterValue !== 'all') {
+       // Simple heuristic: check if title or brand contains category keyword
+       if (item.category && item.category !== catFilterValue) return false;
+    }
+    
+    // Discount filter
+    const itemPrice = item.extracted_price;
+    let itemMrp = item.old_price_extracted || itemPrice;
+    if (item.allStorePrices) {
+       const prices = Object.values(item.allStorePrices).map(v => v.price).filter(p => p > 0);
+       if (prices.length > 0) itemMrp = Math.max(...prices, itemMrp);
+    }
+    const discount = itemMrp > itemPrice ? Math.round(((itemMrp - itemPrice) / itemMrp) * 100) : 0;
+    if (discount < minDisc || discount > maxDisc) return false;
+    
+    return true;
+  });
+  
+  processAndRender(filtered, false); // false = don't update originalSerpResults
+}
+
+// Initialize tracks on load
+setTimeout(() => {
+  updatePriceTrack();
+  updateDiscountTrack();
+}, 1000);

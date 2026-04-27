@@ -164,7 +164,7 @@ async function scrapeAmazon(query) {
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
           'Referer': 'https://www.amazon.in/'
         },
-        timeout: 10000
+        timeout: 15000
       }
     );
 
@@ -221,7 +221,7 @@ async function scrapeFlipkart(query) {
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
           'Referer': 'https://www.flipkart.com/'
         },
-        timeout: 10000
+        timeout: 15000
       }
     );
 
@@ -307,7 +307,7 @@ async function scrapeCroma(query) {
       `https://www.croma.com/searchB?q=${encodeURIComponent(query)}%3Arelevance&text=${encodeURIComponent(query)}`,
       {
         headers: { ...COMMON_HEADERS, 'User-Agent': getRandomUserAgent() },
-        timeout: 8000,
+        timeout: 15000,
         maxRedirects: 5
       }
     );
@@ -375,7 +375,7 @@ async function scrapeRelianceDigital(query) {
       `https://www.reliancedigital.in/search?q=${encodeURIComponent(query)}`,
       {
         headers: { ...COMMON_HEADERS, 'User-Agent': getRandomUserAgent() },
-        timeout: 8000,
+        timeout: 15000,
         maxRedirects: 5
       }
     );
@@ -470,7 +470,7 @@ async function scrapeTataCliq(query) {
       `https://www.tatacliq.com/search/?searchCategory=all&text=${encodeURIComponent(query)}`,
       {
         headers: { ...COMMON_HEADERS, 'User-Agent': getRandomUserAgent() },
-        timeout: 8000,
+        timeout: 15000,
         maxRedirects: 5
       }
     );
@@ -809,12 +809,13 @@ app.get('/api/image-proxy', async (req, res) => {
         'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
         'Referer': new URL(imageUrl).origin 
       },
-      timeout: 5000
+      timeout: 10000
     });
     res.setHeader('Content-Type', response.headers['content-type'] || 'image/jpeg');
     res.setHeader('Cache-Control', 'public, max-age=86400');
     response.data.pipe(res);
   } catch (error) {
+    console.error(`🖼️ Image Proxy Error (${imageUrl}):`, error.message);
     res.status(500).send('Error fetching image');
   }
 });

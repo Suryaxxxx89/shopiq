@@ -1182,12 +1182,18 @@ function renderPriceHistory(productData, selectedItem) {
   storeKeys.forEach(store => {
     if (history[store]) {
       history[store].forEach(entry => {
-        minPrice = Math.min(minPrice, entry.price);
-        maxPrice = Math.max(maxPrice, entry.price);
+        if (entry.price !== Infinity && !isNaN(entry.price)) {
+          minPrice = Math.min(minPrice, entry.price);
+          maxPrice = Math.max(maxPrice, entry.price);
+        }
       });
     }
   });
 
+  if (minPrice === Infinity || isNaN(minPrice)) {
+    historyCard.style.display = 'none';
+    return;
+  }
   const priceRange = maxPrice - minPrice || 1;
   const padding = priceRange * 0.1;
   const minY = minPrice - padding;
@@ -1198,7 +1204,11 @@ function renderPriceHistory(productData, selectedItem) {
     const idx = sortedDates.indexOf(date);
     return idx === -1 ? 0 : (idx / (sortedDates.length - 1 || 1)) * width;
   };
-  const yScale = (price) => height - ((price - minY) / (maxY - minY)) * height;
+  const yScale = (price) => {
+    const range = maxY - minY;
+    if (range === 0) return height / 2;
+    return height - ((price - minY) / range) * height;
+  };
 
   // Clear SVG
   svg.innerHTML = '';
@@ -2088,12 +2098,13 @@ function generateSyntheticHistory(item) {
   
   STORES.forEach(store => {
     const prices = [];
-    // Use the actual current price for this store if available in variants
+    // Use the actual current price for this store if available and valid
     const variant = item.storeVariants ? item.storeVariants[store.key] : null;
-    let basePrice = (variant && variant.price > 0) ? variant.price : (item.price || 50000);
+    let basePrice = (variant && variant.price > 0 && variant.price !== Infinity) ? variant.price : (item.price || 50000);
+    if (basePrice === Infinity) basePrice = 50000;
     
     // Add some random offset if it's a fallback store (to differentiate the lines)
-    if (!variant || variant.price <= 0 || variant.isSearchLink) {
+    if (!variant || variant.price <= 0 || variant.price === Infinity || variant.isSearchLink) {
       // Differentiate stores that don't have a real price yet
       const seed = store.key.length * 1000;
       const offset = (Math.sin(seed) * 2000); 
